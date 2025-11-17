@@ -1,0 +1,78 @@
+/* Tailwind directives. These must stay at the top.
+*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles using Tailwind's @layer directive.
+  This adds our minimalist design defaults.
+*/
+@layer base {
+  /* 1. Set a clean, modern font stack.
+    2. Set default text and background colors for the whole app.
+    3. Ensure smooth scrolling.
+  */
+  html {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-800 antialiased;
+  }
+
+  /* 2. Set consistent heading styles.
+  */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-gray-900;
+  }
+
+  /* 3. Style form inputs to use your brand color on focus.
+       This provides a consistent, high-quality feel for all forms.
+  */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  select,
+  textarea {
+    @apply border-gray-300 rounded-md shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500;
+  }
+}
+
+/* Custom utility styles.
+*/
+@layer utilities {
+  /* 1. Your existing utility to hide scrollbars.
+  */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* 2. A new utility for a modern, minimal scrollbar 
+       (for browsers that don't hide them).
+  */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+    border-radius: 10px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: theme('colors.gray.300') theme('colors.gray.100'); /* Firefox */
+  }
+}
