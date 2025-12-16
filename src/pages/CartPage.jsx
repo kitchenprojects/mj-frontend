@@ -1,40 +1,88 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCartStore } from '../store/cartStore';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { useNavigate, Link } from 'react-router-dom';
-import { FiPlus, FiMinus, FiTrash2, FiShoppingCart } from 'react-icons/fi'; // Modern icons
+import { FiPlus, FiMinus, FiTrash2, FiShoppingCart, FiX } from 'react-icons/fi';
 
 export default function CartPage() {
   const { items, total, updateQty, removeItem, clear } = useCartStore();
   const profile = useAuthStore((s) => s.profile);
   const navigate = useNavigate();
+  const [showPayment, setShowPayment] = useState(false);
+  const [snapToken, setSnapToken] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const placeOrder = async () => {
-    if (!profile) return alert('Harap login');
+    if (!profile) return alert('Harap login terlebih dahulu');
     
-    const addrs = await api.get('/users/me/addresses');
-    const defaultAddress = addrs.data[0];
-    
-    if (!defaultAddress) {
-      return alert('Tambahkan alamat (termasuk Kota) terlebih dahulu');
-    }
-
-    const payload = {
-      user_id: profile.id,
-      address_id: defaultAddress.address_id,
-      items: items.map((i) => ({ menu_id: i.menu_id, quantity: i.quantity })),
-    };
-
+    setLoading(true);
     try {
-      await api.post('/orders', payload);
-      clear();
-      navigate('/orders');
+      // Get user's address
+      const addrs = await api.get('/users/me/addresses');
+      const defaultAddress = addrs.data[0];
+      
+      if (!defaultAddress) {
+        alert('Tambahkan alamat (termasuk Kota) terlebih dahulu');
+        setLoading(false);
+        return;
+      }
+
+      // Prepare items with menu_name for Midtrans
+      const itemsWithName = items.map(i => ({
+        menu_id: i.menu_id,
+        quantity: i.quantity,
+        menu_name: i.menu_name,
+        price: i.price
+      }));
+
+      const payload = {
+        user_id: profile.id,
+        address_id: defaultAddress.address_id,
+        items: itemsWithName,
+      };
+
+      // Create order and get snap token
+      const { data } = await api.post('/orders', payload);
+      
+      setSnapToken(data.snap_token);
+      setShowPayment(true);
+      
     } catch (error) {
       console.error("Failed to place order:", error);
       alert('Gagal membuat pesanan. Silakan coba lagi.');
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Initialize Snap when token is available
+  useEffect(() => {
+    if (snapToken && showPayment && window.snap) {
+      window.snap.embed(snapToken, {
+        embedId: 'snap-container',
+        onSuccess: function(result) {
+          console.log('Payment success:', result);
+          clear();
+          setShowPayment(false);
+          alert('Pembayaran berhasil!');
+          navigate('/orders');
+        },
+        onPending: function(result) {
+          console.log('Payment pending:', result);
+          alert('Menunggu pembayaran...');
+        },
+        onError: function(result) {
+          console.log('Payment error:', result);
+          alert('Pembayaran gagal. Silakan coba lagi.');
+        },
+        onClose: function() {
+          console.log('Payment popup closed');
+          setShowPayment(false);
+        }
+      });
+    }
+  }, [snapToken, showPayment]);
 
   // Handlers for quantity
   const handleDecrement = (item) => {
@@ -46,6 +94,28 @@ export default function CartPage() {
   const handleIncrement = (item) => {
     updateQty(item.menu_id, item.quantity + 1);
   };
+
+  // Payment Modal
+  if (showPayment) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+          <div className="flex justify-between items-center p-4 border-b sticky top-0 bg-white">
+            <h2 className="text-xl font-semibold">Complete Payment</h2>
+            <button 
+              onClick={() => setShowPayment(false)}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <FiX size={24} />
+            </button>
+          </div>
+          
+          {/* Snap Embed Container */}
+          <div id="snap-container" className="p-4"></div>
+        </div>
+      </div>
+    );
+  }
 
   // Empty Cart State
   if (items.length === 0) {
@@ -139,10 +209,11 @@ export default function CartPage() {
               </div>
             </div>
             <button 
-              className="w-full mt-6 px-4 py-3 bg-emerald-600 text-white font-semibold rounded-md hover:bg-emerald-700 transition-colors" 
+              className="w-full mt-6 px-4 py-3 bg-emerald-600 text-white font-semibold rounded-md hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" 
               onClick={placeOrder}
+              disabled={loading}
             >
-              Place Order
+              {loading ? 'Processing...' : 'Proceed to Payment'}
             </button>
           </div>
         </aside>
