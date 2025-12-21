@@ -228,57 +228,92 @@ export default function AdminOrdersPage() {
       )}
 
       {!loading && filteredOrders.length > 0 && (
-        <div className="bg-white rounded-lg border overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b">
-              <tr>
-                <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Order ID</th>
-                <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Pelanggan</th>
-                <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Total</th>
-                <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Status</th>
-                <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Pembayaran</th>
-                <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Tanggal</th>
-                <th className="text-center px-4 py-3 text-sm font-medium text-gray-600">Aksi</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {filteredOrders.map((o) => (
-                <tr key={o.order_id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm font-mono">
-                    #{o.order_id.substring(0, 8)}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-800">
-                    {o.user_name || 'Customer'}
-                  </td>
-                  <td className="px-4 py-3 text-sm font-medium text-emerald-600">
-                    Rp {Number(o.total_amount).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(o.status)}`}>
-                      {o.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`text-xs px-2 py-1 rounded-full ${getPaymentColor(o.payment_status)}`}>
-                      {o.payment_status || 'Unpaid'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-500">
-                    {format(new Date(o.order_date), 'dd MMM yyyy HH:mm')}
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    <button
-                      onClick={() => loadOrderDetail(o.order_id)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
-                    >
-                      <FiEye size={14} /> Detail
-                    </button>
-                  </td>
+        <>
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-3">
+            {filteredOrders.map((o) => (
+              <div key={o.order_id} className="bg-white rounded-lg border p-4 shadow-sm">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <p className="font-mono text-sm text-gray-600">#{o.order_id.substring(0, 8)}</p>
+                    <p className="font-medium text-gray-800">{o.user_name || 'Customer'}</p>
+                  </div>
+                  <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(o.status)}`}>
+                    {o.status}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center mb-3">
+                  <span className="font-bold text-emerald-600">Rp {Number(o.total_amount).toLocaleString()}</span>
+                  <span className={`text-xs px-2 py-1 rounded-full ${getPaymentColor(o.payment_status)}`}>
+                    {o.payment_status || 'Unpaid'}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-xs text-gray-500">
+                  <span>{format(new Date(o.order_date), 'dd MMM yyyy HH:mm')}</span>
+                  <button
+                    onClick={() => loadOrderDetail(o.order_id)}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  >
+                    <FiEye size={14} /> Detail
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table */}
+          <div className="hidden md:block bg-white rounded-lg border overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b">
+                <tr>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Order ID</th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Pelanggan</th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Total</th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Status</th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Pembayaran</th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Tanggal</th>
+                  <th className="text-center px-4 py-3 text-sm font-medium text-gray-600">Aksi</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y">
+                {filteredOrders.map((o) => (
+                  <tr key={o.order_id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-sm font-mono">
+                      #{o.order_id.substring(0, 8)}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-800">
+                      {o.user_name || 'Customer'}
+                    </td>
+                    <td className="px-4 py-3 text-sm font-medium text-emerald-600">
+                      Rp {Number(o.total_amount).toLocaleString()}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(o.status)}`}>
+                        {o.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`text-xs px-2 py-1 rounded-full ${getPaymentColor(o.payment_status)}`}>
+                        {o.payment_status || 'Unpaid'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-500">
+                      {format(new Date(o.order_date), 'dd MMM yyyy HH:mm')}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <button
+                        onClick={() => loadOrderDetail(o.order_id)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+                      >
+                        <FiEye size={14} /> Detail
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {/* Order Detail Modal */}
@@ -415,8 +450,8 @@ export default function AdminOrdersPage() {
                           onClick={() => updateStatus(orderDetail.order_id, s)}
                           disabled={orderDetail.status === s}
                           className={`inline-flex items-center gap-1 px-3 py-2 rounded-md text-sm transition-colors ${orderDetail.status === s
-                              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                              : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
                             }`}
                         >
                           {s === 'Pending' && <FiClock size={14} />}
