@@ -4,7 +4,7 @@ import { supabase } from './supabase';
 
 // Create base Axios instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://mj-kitchen-489615087978.asia-southeast2.run.app/api',
   headers: {
     'Content-Type': 'application/json',
   },
