@@ -162,8 +162,8 @@ export default function MenuPage() {
                   <button
                     onClick={() => handleCategoryClick('')}
                     className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group text-left ${activeCategory === ''
-                        ? 'bg-teal-50 text-teal-600'
-                        : 'hover:bg-gray-50'
+                      ? 'bg-teal-50 text-teal-600'
+                      : 'hover:bg-gray-50'
                       }`}
                   >
                     <span className={`material-symbols-outlined text-[20px] transition-transform group-hover:scale-110 ${activeCategory === '' ? 'text-teal-600' : 'text-gray-400 group-hover:text-teal-500'
@@ -181,8 +181,8 @@ export default function MenuPage() {
                       key={cat.category_id}
                       onClick={() => handleCategoryClick(cat.category_id)}
                       className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group text-left ${activeCategory === cat.category_id
-                          ? 'bg-teal-50 text-teal-600'
-                          : 'hover:bg-gray-50'
+                        ? 'bg-teal-50 text-teal-600'
+                        : 'hover:bg-gray-50'
                         }`}
                     >
                       <span className={`material-symbols-outlined text-[20px] transition-transform group-hover:scale-110 ${activeCategory === cat.category_id ? 'text-teal-600' : 'text-gray-400 group-hover:text-teal-500'
@@ -207,8 +207,8 @@ export default function MenuPage() {
                       key={filter}
                       onClick={() => toggleDietaryFilter(filter)}
                       className={`flex h-8 items-center justify-center gap-x-2 rounded-lg border px-3 transition-colors ${dietaryFilters.includes(filter)
-                          ? 'bg-teal-500 border-teal-500 text-white'
-                          : 'bg-white border-gray-200 text-gray-700 hover:border-teal-300'
+                        ? 'bg-teal-500 border-teal-500 text-white'
+                        : 'bg-white border-gray-200 text-gray-700 hover:border-teal-300'
                         }`}
                     >
                       <p className="text-xs font-medium leading-normal">{filter}</p>
@@ -298,11 +298,13 @@ function MenuCard({ item, onAdd, onClick }) {
 
   return (
     <div
-      className="flex flex-col rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer border border-gray-100 hover:border-teal-200"
-      onClick={() => onClick(item)}
+      className="flex flex-col rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-lg transition-all duration-300 group border border-gray-100 hover:border-teal-200"
     >
       {/* Image */}
-      <div className="h-48 overflow-hidden bg-gray-100 relative">
+      <div
+        className="h-48 overflow-hidden bg-gray-100 relative cursor-pointer"
+        onClick={() => onClick(item)}
+      >
         {displayImage ? (
           <img
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -336,15 +338,33 @@ function MenuCard({ item, onAdd, onClick }) {
         <p className="text-gray-500 text-sm line-clamp-2 mb-4 flex-grow">
           {item.description || 'Menu lezat siap dipesan'}
         </p>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onAdd(item);
-          }}
-          className="mt-auto w-full py-2.5 bg-gray-100 text-gray-800 font-semibold text-sm rounded-lg hover:bg-teal-500 hover:text-white transition-colors"
-        >
-          Tambah ke Pesanan
-        </button>
+
+        {/* Action Buttons */}
+        <div className="mt-auto flex gap-2">
+          {/* Quick Add Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onAdd(item);
+            }}
+            className="flex-1 py-2.5 bg-teal-500 text-white font-semibold text-sm rounded-lg hover:bg-teal-600 transition-colors flex items-center justify-center gap-1.5"
+          >
+            <span className="material-symbols-outlined text-[18px]">add</span>
+            Tambah
+          </button>
+
+          {/* Custom Order Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick(item);
+            }}
+            className="py-2.5 px-3 border-2 border-teal-500 text-teal-600 font-semibold text-sm rounded-lg hover:bg-teal-50 transition-colors flex items-center justify-center gap-1.5"
+          >
+            <span className="material-symbols-outlined text-[18px]">tune</span>
+            Custom
+          </button>
+        </div>
       </div>
     </div>
   );
