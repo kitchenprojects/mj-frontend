@@ -4,6 +4,9 @@ import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { FiPlus, FiMinus, FiTrash2, FiShoppingCart, FiX } from 'react-icons/fi';
+import { FaWhatsapp } from 'react-icons/fa';
+import { generateWhatsAppOrderMessage } from '../components/WhatsAppButton';
+import { calculateShipping, formatShippingFee, getTotalQuantity } from '../utils/shipping';
 
 export default function CartPage() {
   const { items, total, updateQty, removeItem, clear } = useCartStore();
@@ -198,22 +201,37 @@ export default function CartPage() {
         <aside className="md:col-span-1">
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 sticky top-24">
             <h2 className="text-xl font-semibold text-gray-800 border-b pb-4 mb-4">Order Summary</h2>
-            <div className="space-y-3">
-              <div className="flex justify-between text-gray-600">
-                <span>Subtotal</span>
-                <span className="font-medium">Rp {total().toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between text-gray-600">
-                <span>Delivery</span>
-                <span className="font-medium">Free</span>
-              </div>
-              <div className="border-t pt-4 mt-4">
-                <div className="flex justify-between text-lg font-bold text-gray-900">
-                  <span>Total</span>
-                  <span>Rp {total().toLocaleString()}</span>
+            {(() => {
+              const totalQty = getTotalQuantity(items);
+              const shipping = calculateShipping(totalQty);
+              const subtotal = total();
+              const grandTotal = subtotal + shipping.fee;
+
+              return (
+                <div className="space-y-3">
+                  <div className="flex justify-between text-gray-600">
+                    <span>Subtotal ({totalQty} item)</span>
+                    <span className="font-medium">Rp {subtotal.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-gray-600">
+                    <span>Ongkir</span>
+                    <span className={`font-medium ${shipping.color}`}>{formatShippingFee(shipping.fee)}</span>
+                  </div>
+                  {shipping.nextTierInfo && (
+                    <p className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                      💡 {shipping.nextTierInfo}
+                    </p>
+                  )}
+                  <div className="border-t pt-4 mt-4">
+                    <div className="flex justify-between text-lg font-bold text-gray-900">
+                      <span>Total</span>
+                      <span>Rp {grandTotal.toLocaleString()}</span>
+                    </div>
+                    <p className={`text-sm mt-1 ${shipping.color}`}>{shipping.label}</p>
+                  </div>
                 </div>
-              </div>
-            </div>
+              );
+            })()}
             <button
               className="w-full mt-6 px-4 py-3 bg-emerald-600 text-white font-semibold rounded-md hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={placeOrder}
@@ -221,6 +239,27 @@ export default function CartPage() {
             >
               {loading ? 'Processing...' : 'Proceed to Payment'}
             </button>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 my-4">
+              <div className="flex-1 border-t border-gray-200"></div>
+              <span className="text-gray-400 text-sm">atau</span>
+              <div className="flex-1 border-t border-gray-200"></div>
+            </div>
+
+            {/* WhatsApp Order Button */}
+            <a
+              href={`https://wa.me/6288970788847?text=${encodeURIComponent(generateWhatsAppOrderMessage(items, total()))}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition-colors"
+            >
+              <FaWhatsapp size={20} />
+              Order via WhatsApp
+            </a>
+            <p className="text-xs text-gray-500 text-center mt-2">
+              Pesan langsung ke admin untuk custom order atau tanya ketersediaan
+            </p>
           </div>
         </aside>
 
