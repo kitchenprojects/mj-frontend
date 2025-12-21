@@ -99,8 +99,8 @@ export default function CartPage() {
   if (showPayment) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-          <div className="flex justify-between items-center p-4 border-b sticky top-0 bg-white">
+        <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col">
+          <div className="flex justify-between items-center p-4 border-b bg-white flex-shrink-0">
             <h2 className="text-xl font-semibold">Complete Payment</h2>
             <button 
               onClick={() => setShowPayment(false)}
@@ -110,8 +110,12 @@ export default function CartPage() {
             </button>
           </div>
           
-          {/* Snap Embed Container */}
-          <div id="snap-container" className="p-4"></div>
+          {/* Snap Embed Container - sized for Midtrans widget */}
+          <div 
+            id="snap-container" 
+            className="flex-1 overflow-y-auto"
+            style={{ minHeight: '480px' }}
+          ></div>
         </div>
       </div>
     );
