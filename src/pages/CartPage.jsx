@@ -92,12 +92,12 @@ export default function CartPage() {
   // Handlers for quantity
   const handleDecrement = (item) => {
     if (item.quantity > 1) {
-      updateQty(item.menu_id, item.quantity - 1);
+      updateQty(item.itemKey || item.menu_id, item.quantity - 1);
     }
   };
 
   const handleIncrement = (item) => {
-    updateQty(item.menu_id, item.quantity + 1);
+    updateQty(item.itemKey || item.menu_id, item.quantity + 1);
   };
 
   // Payment Modal
@@ -153,46 +153,70 @@ export default function CartPage() {
         {/* Item List (Left Column) */}
         <div className="md:col-span-2 space-y-4">
           {items.map((item) => (
-            <div key={item.menu_id} className="flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-              {/* Image */}
-              <img
-                src={item.image_url || (item.images && item.images[0]?.image_url) || 'https://via.placeholder.com/100'}
-                alt={item.menu_name}
-                className="w-20 h-20 rounded-md object-cover"
-              />
+            <div key={item.itemKey || item.menu_id} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="flex items-start gap-4">
+                {/* Image */}
+                <img
+                  src={item.image_url || (item.images && item.images[0]?.image_url) || 'https://via.placeholder.com/100'}
+                  alt={item.menu_name}
+                  className="w-20 h-20 rounded-md object-cover flex-shrink-0"
+                />
 
-              {/* Item Details */}
-              <div className="flex-grow">
-                <h3 className="font-semibold text-gray-800">{item.menu_name}</h3>
-                <p className="text-sm text-emerald-600 font-medium">Rp {Number(item.price).toLocaleString()}</p>
-              </div>
+                {/* Item Details */}
+                <div className="flex-grow min-w-0">
+                  <h3 className="font-semibold text-gray-800">{item.menu_name}</h3>
+                  <p className="text-sm text-emerald-600 font-medium">
+                    Rp {Number(item.price).toLocaleString()}
+                    {item.addonsTotal > 0 && (
+                      <span className="text-gray-500"> + Rp {item.addonsTotal.toLocaleString()}</span>
+                    )}
+                  </p>
 
-              {/* Quantity Controls */}
-              <div className="flex items-center gap-2 border border-gray-300 rounded-md">
+                  {/* Add-ons */}
+                  {item.addons?.length > 0 && (
+                    <div className="mt-1">
+                      <span className="text-xs text-gray-500">Tambahan: </span>
+                      <span className="text-xs text-gray-700">
+                        {item.addons.map(a => a.menu_name).join(', ')}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Notes */}
+                  {item.notes && (
+                    <div className="mt-1 text-xs text-gray-500 italic">
+                      📝 "{item.notes}"
+                    </div>
+                  )}
+                </div>
+
+                {/* Quantity Controls */}
+                <div className="flex items-center gap-2 border border-gray-300 rounded-md flex-shrink-0">
+                  <button
+                    onClick={() => handleDecrement(item)}
+                    disabled={item.quantity <= 1}
+                    className="px-2 py-1 text-gray-600 hover:text-emerald-600 disabled:opacity-50"
+                  >
+                    <FiMinus size={16} />
+                  </button>
+                  <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+                  <button
+                    onClick={() => handleIncrement(item)}
+                    className="px-2 py-1 text-gray-600 hover:text-emerald-600"
+                  >
+                    <FiPlus size={16} />
+                  </button>
+                </div>
+
+                {/* Remove Button */}
                 <button
-                  onClick={() => handleDecrement(item)}
-                  disabled={item.quantity <= 1}
-                  className="px-2 py-1 text-gray-600 hover:text-emerald-600 disabled:opacity-50"
+                  onClick={() => removeItem(item.itemKey || item.menu_id)}
+                  className="text-gray-400 hover:text-red-500 transition-colors flex-shrink-0"
+                  aria-label={`Remove ${item.menu_name}`}
                 >
-                  <FiMinus size={16} />
-                </button>
-                <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
-                <button
-                  onClick={() => handleIncrement(item)}
-                  className="px-2 py-1 text-gray-600 hover:text-emerald-600"
-                >
-                  <FiPlus size={16} />
+                  <FiTrash2 size={20} />
                 </button>
               </div>
-
-              {/* Remove Button */}
-              <button
-                onClick={() => removeItem(item.menu_id)}
-                className="text-gray-400 hover:text-red-500 transition-colors"
-                aria-label={`Remove ${item.menu_name}`}
-              >
-                <FiTrash2 size={20} />
-              </button>
             </div>
           ))}
         </div>

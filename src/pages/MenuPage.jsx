@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import MenuItem from '../components/MenuItem';
+import AddOnModal from '../components/AddOnModal';
 import { useCartStore } from '../store/cartStore';
+import { showSuccess } from '../utils/swal';
 
 export default function MenuPage() {
   const [items, setItems] = useState([]);
   const [categories, setCategories] = useState([]);
   const [active, setActive] = useState('');
+  const [selectedItem, setSelectedItem] = useState(null);
   const addItem = useCartStore((s) => s.addItem);
 
   useEffect(() => {
@@ -17,6 +20,24 @@ export default function MenuPage() {
     const url = active ? `/menu/items?category_id=${active}` : '/menu/items';
     api.get(url).then((r) => setItems(r.data));
   }, [active]);
+
+  // Handle item click - open modal for customization
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+  };
+
+  // Handle add from modal with addons and notes
+  const handleAddWithCustomization = (item, quantity, notes, addons) => {
+    addItem(item, quantity, notes, addons);
+    showSuccess(`${item.menu_name} ditambahkan ke keranjang!`);
+    setSelectedItem(null);
+  };
+
+  // Quick add without modal (for simple orders)
+  const handleQuickAdd = (item) => {
+    addItem(item, 1, '', []);
+    showSuccess(`${item.menu_name} ditambahkan!`);
+  };
 
   // Helper function for styling the category buttons
   const getButtonClass = (categoryId) => {
@@ -30,7 +51,7 @@ export default function MenuPage() {
   return (
     <div className="py-8">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Our Menu</h1>
-      
+
       {/* Category Filters */}
       <div className="flex gap-3 mb-8 flex-wrap">
         <button
@@ -40,8 +61,8 @@ export default function MenuPage() {
           All
         </button>
         {categories.map((c) => (
-          <button 
-            key={c.category_id} 
+          <button
+            key={c.category_id}
             onClick={() => setActive(c.category_id)}
             className={getButtonClass(c.category_id)}
           >
@@ -49,13 +70,27 @@ export default function MenuPage() {
           </button>
         ))}
       </div>
-      
+
       {/* Menu Item Grid */}
       <div className="grid md:grid-cols-3 gap-6">
         {items.map((item) => (
-          <MenuItem key={item.menu_id} item={item} onAdd={addItem} />
+          <MenuItem
+            key={item.menu_id}
+            item={item}
+            onAdd={handleQuickAdd}
+            onCustomize={handleItemClick}
+          />
         ))}
       </div>
+
+      {/* Add-on Modal */}
+      {selectedItem && (
+        <AddOnModal
+          item={selectedItem}
+          onClose={() => setSelectedItem(null)}
+          onConfirm={handleAddWithCustomization}
+        />
+      )}
     </div>
   );
 }
