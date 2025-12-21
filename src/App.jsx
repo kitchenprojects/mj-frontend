@@ -18,6 +18,7 @@ import ProfilePage from './pages/ProfilePage';
 import ReceiptPage from './pages/ReceiptPage';
 import AdminCategoryPage from './pages/admin/AdminCategoryPage';
 import AdminGalleryPage from './pages/admin/AdminGalleryPage';
+import AdminReportPage from './pages/admin/AdminReportPage';
 
 // Private Route
 const PrivateRoute = ({ children }) => {
@@ -83,6 +84,7 @@ function App() {
           <Route path="orders" element={<AdminOrdersPage />} />
           <Route path="profiles" element={<AdminProfilePage />} />
           <Route path="profiles/:userId/addresses" element={<AdminAddressPage />} />
+          <Route path="reports" element={<AdminReportPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
