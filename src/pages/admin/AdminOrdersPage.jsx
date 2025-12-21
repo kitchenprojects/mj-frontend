@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { format } from 'date-fns';
-import { FiX, FiPackage, FiUser, FiMapPin, FiCreditCard, FiClock, FiCheck, FiTruck, FiEye } from 'react-icons/fi';
+import { FiX, FiPackage, FiUser, FiMapPin, FiCreditCard, FiClock, FiCheck, FiTruck, FiEye, FiRefreshCw, FiSearch, FiFilter } from 'react-icons/fi';
+import { showSuccess, showError, confirmAction } from '../../utils/swal';
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -10,6 +11,11 @@ export default function AdminOrdersPage() {
   const [detailLoading, setDetailLoading] = useState(false);
   const [orderDetail, setOrderDetail] = useState(null);
 
+  // Filters
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [paymentFilter, setPaymentFilter] = useState('all');
+
   const load = async () => {
     setLoading(true);
     try {
@@ -17,12 +23,33 @@ export default function AdminOrdersPage() {
       setOrders(data);
     } catch (error) {
       console.error('Failed to load orders:', error);
+      showError('Gagal memuat orders');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => { load(); }, []);
+
+  // Filter orders
+  const filteredOrders = orders.filter(o => {
+    // Search filter
+    const query = searchQuery.toLowerCase();
+    const matchesSearch = !searchQuery ||
+      o.order_id.toLowerCase().includes(query) ||
+      (o.user_name?.toLowerCase().includes(query));
+
+    // Status filter
+    const matchesStatus = statusFilter === 'all' ||
+      o.status?.toLowerCase() === statusFilter.toLowerCase();
+
+    // Payment filter
+    const matchesPayment = paymentFilter === 'all' ||
+      (o.payment_status?.toLowerCase() === paymentFilter.toLowerCase()) ||
+      (!o.payment_status && paymentFilter === 'unpaid');
+
+    return matchesSearch && matchesStatus && matchesPayment;
+  });
 
   const loadOrderDetail = async (orderId) => {
     setDetailLoading(true);
@@ -32,6 +59,7 @@ export default function AdminOrdersPage() {
       setOrderDetail(data);
     } catch (error) {
       console.error('Failed to load order detail:', error);
+      showError('Gagal memuat detail order');
       setOrderDetail(null);
     } finally {
       setDetailLoading(false);
@@ -44,16 +72,34 @@ export default function AdminOrdersPage() {
   };
 
   const updateStatus = async (order_id, status) => {
-    try {
-      await api.put(`/orders/${order_id}/status`, { status });
-      load();
-      if (orderDetail && orderDetail.order_id === order_id) {
-        setOrderDetail({ ...orderDetail, status });
+    const confirmed = await confirmAction(
+      'Update Status?',
+      `Ubah status order menjadi "${status}"?`,
+      'Ya, Update',
+      'Batal'
+    );
+    if (confirmed) {
+      try {
+        await api.put(`/orders/${order_id}/status`, { status });
+        showSuccess(`Status berhasil diubah menjadi ${status}`);
+        load();
+        if (orderDetail && orderDetail.order_id === order_id) {
+          setOrderDetail({ ...orderDetail, status });
+        }
+      } catch (error) {
+        console.error('Failed to update status:', error);
+        showError('Gagal mengubah status');
       }
-    } catch (error) {
-      console.error('Failed to update status:', error);
     }
   };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setStatusFilter('all');
+    setPaymentFilter('all');
+  };
+
+  const hasActiveFilters = searchQuery || statusFilter !== 'all' || paymentFilter !== 'all';
 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
@@ -77,28 +123,111 @@ export default function AdminOrdersPage() {
 
   return (
     <div className="py-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Order Masuk</h1>
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Order Masuk</h1>
+          <p className="text-gray-500 text-sm">
+            {filteredOrders.length} dari {orders.length} orders
+          </p>
+        </div>
         <button
           onClick={load}
-          className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors"
+          disabled={loading}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50"
         >
-          Refresh
+          <FiRefreshCw size={16} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
 
-      {loading && (
-        <div className="text-center py-8 text-gray-500">Loading orders...</div>
-      )}
+      {/* Filters */}
+      <div className="bg-white border rounded-xl p-4 mb-6">
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Search */}
+          <div className="relative flex-1">
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Cari order ID atau nama..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <FiX size={16} />
+              </button>
+            )}
+          </div>
 
-      {!loading && orders.length === 0 && (
-        <div className="text-center py-12 bg-white rounded-lg border">
-          <FiPackage size={48} className="mx-auto text-gray-400 mb-4" />
-          <p className="text-gray-500">Tidak ada order masuk.</p>
+          {/* Status Filter */}
+          <div className="flex items-center gap-2">
+            <FiFilter className="text-gray-400" size={16} />
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            >
+              <option value="all">Semua Status</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="out for delivery">Out for Delivery</option>
+              <option value="delivered">Delivered</option>
+            </select>
+          </div>
+
+          {/* Payment Filter */}
+          <select
+            value={paymentFilter}
+            onChange={(e) => setPaymentFilter(e.target.value)}
+            className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+          >
+            <option value="all">Semua Pembayaran</option>
+            <option value="paid">Paid</option>
+            <option value="pending">Pending</option>
+            <option value="unpaid">Unpaid</option>
+          </select>
+
+          {/* Clear Filters */}
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              className="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              Reset Filter
+            </button>
+          )}
+        </div>
+      </div>
+
+      {loading && (
+        <div className="text-center py-8 text-gray-500">
+          <div className="animate-spin w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+          Loading orders...
         </div>
       )}
 
-      {!loading && orders.length > 0 && (
+      {!loading && filteredOrders.length === 0 && (
+        <div className="text-center py-12 bg-white rounded-lg border">
+          <FiPackage size={48} className="mx-auto text-gray-400 mb-4" />
+          <p className="text-gray-500">
+            {hasActiveFilters ? 'Tidak ada order yang sesuai filter' : 'Tidak ada order masuk'}
+          </p>
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              className="mt-4 text-emerald-600 hover:text-emerald-700"
+            >
+              Reset Filter
+            </button>
+          )}
+        </div>
+      )}
+
+      {!loading && filteredOrders.length > 0 && (
         <div className="bg-white rounded-lg border overflow-hidden">
           <table className="w-full">
             <thead className="bg-gray-50 border-b">
@@ -113,7 +242,7 @@ export default function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {orders.map((o) => (
+              {filteredOrders.map((o) => (
                 <tr key={o.order_id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 text-sm font-mono">
                     #{o.order_id.substring(0, 8)}

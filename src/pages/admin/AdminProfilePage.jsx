@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import { format } from 'date-fns';
-import { FiEdit, FiTrash2, FiX, FiMapPin, FiShield, FiUsers, FiRefreshCw } from 'react-icons/fi';
+import { FiEdit, FiTrash2, FiX, FiMapPin, FiShield, FiUsers, FiRefreshCw, FiSearch } from 'react-icons/fi';
+import { showSuccess, showError, confirmDelete, confirmAction } from '../../utils/swal';
 
 export default function AdminProfilePage() {
   const [profiles, setProfiles] = useState([]);
@@ -11,6 +12,7 @@ export default function AdminProfilePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentProfile, setCurrentProfile] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const loadProfiles = async () => {
     setLoading(true);
@@ -19,6 +21,7 @@ export default function AdminProfilePage() {
       setProfiles(data);
     } catch (error) {
       console.error("Failed to load profiles:", error);
+      showError('Gagal memuat profil');
     } finally {
       setLoading(false);
     }
@@ -28,39 +31,59 @@ export default function AdminProfilePage() {
     loadProfiles();
   }, []);
 
-  // Separate profiles by role
-  const admins = profiles.filter(p => p.role === 'admin');
-  const customers = profiles.filter(p => p.role !== 'admin');
+  // Filter profiles based on search query
+  const filterProfiles = (list) => {
+    if (!searchQuery.trim()) return list;
+    const query = searchQuery.toLowerCase();
+    return list.filter(p =>
+      (p.name?.toLowerCase().includes(query)) ||
+      (p.phone_number?.includes(query)) ||
+      (p.id?.toLowerCase().includes(query))
+    );
+  };
+
+  // Separate profiles by role and apply filter
+  const admins = filterProfiles(profiles.filter(p => p.role === 'admin'));
+  const customers = filterProfiles(profiles.filter(p => p.role !== 'admin'));
 
   const handleEditClick = (profile) => {
     setCurrentProfile({ ...profile });
     setIsModalOpen(true);
   };
 
-  const handleDeleteClick = async (profileId) => {
-    if (window.confirm('Yakin ingin menghapus profil ini? Tindakan ini tidak dapat dibatalkan.')) {
+  const handleDeleteClick = async (profile) => {
+    const confirmed = await confirmDelete(profile.name || 'profil ini');
+    if (confirmed) {
       try {
-        await api.delete(`/users/${profileId}`);
+        await api.delete(`/users/${profile.id}`);
+        showSuccess('Profil berhasil dihapus');
         loadProfiles();
       } catch (error) {
         console.error("Failed to delete profile:", error);
-        alert('Gagal menghapus profil.');
+        showError('Gagal menghapus profil');
       }
     }
   };
 
   const handleQuickRoleChange = async (profile, newRole) => {
-    if (window.confirm(`Ubah role ${profile.name || 'user'} menjadi ${newRole}?`)) {
+    const confirmed = await confirmAction(
+      'Ubah Role?',
+      `Ubah role ${profile.name || 'user'} menjadi ${newRole}?`,
+      'Ya, Ubah',
+      'Batal'
+    );
+    if (confirmed) {
       try {
         await api.put(`/users/${profile.id}`, {
           name: profile.name,
           phone_number: profile.phone_number,
           role: newRole,
         });
+        showSuccess(`Role berhasil diubah menjadi ${newRole}`);
         loadProfiles();
       } catch (error) {
         console.error("Failed to update role:", error);
-        alert('Gagal mengubah role.');
+        showError('Gagal mengubah role');
       }
     }
   };
@@ -78,11 +101,12 @@ export default function AdminProfilePage() {
         phone_number: currentProfile.phone_number,
         role: currentProfile.role,
       });
+      showSuccess('Profil berhasil diupdate');
       handleModalClose();
       loadProfiles();
     } catch (error) {
       console.error("Failed to update profile:", error);
-      alert('Gagal mengupdate profil.');
+      showError('Gagal mengupdate profil');
     } finally {
       setSaving(false);
     }
@@ -121,7 +145,7 @@ export default function AdminProfilePage() {
             {data.length === 0 ? (
               <tr>
                 <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
-                  {emptyMessage}
+                  {searchQuery ? 'Tidak ditemukan hasil pencarian' : emptyMessage}
                 </td>
               </tr>
             ) : data.map((p) => (
@@ -166,7 +190,7 @@ export default function AdminProfilePage() {
                       <FiEdit size={16} />
                     </button>
                     <button
-                      onClick={() => handleDeleteClick(p.id)}
+                      onClick={() => handleDeleteClick(p)}
                       className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       title="Hapus"
                     >
@@ -185,18 +209,39 @@ export default function AdminProfilePage() {
   return (
     <div className="py-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Kelola Pengguna</h1>
           <p className="text-gray-500 text-sm">Atur profil dan akses pengguna</p>
         </div>
-        <button
-          onClick={loadProfiles}
-          disabled={loading}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors disabled:opacity-50"
-        >
-          <FiRefreshCw size={16} className={loading ? 'animate-spin' : ''} /> Refresh
-        </button>
+        <div className="flex items-center gap-3">
+          {/* Search Input */}
+          <div className="relative">
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Cari nama, telepon..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 w-64"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <FiX size={16} />
+              </button>
+            )}
+          </div>
+          <button
+            onClick={loadProfiles}
+            disabled={loading}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50"
+          >
+            <FiRefreshCw size={16} className={loading ? 'animate-spin' : ''} /> Refresh
+          </button>
+        </div>
       </div>
 
       {loading ? (
