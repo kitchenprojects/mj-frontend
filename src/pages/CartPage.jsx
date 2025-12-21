@@ -6,7 +6,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FiPlus, FiMinus, FiTrash2, FiShoppingCart, FiX } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { generateWhatsAppOrderMessage } from '../components/WhatsAppButton';
-import { calculateShipping, formatShippingFee, getTotalQuantity } from '../utils/shipping';
+import ShippingCalculator from '../components/ShippingCalculator';
 
 export default function CartPage() {
   const { items, total, updateQty, removeItem, clear } = useCartStore();
@@ -16,6 +16,7 @@ export default function CartPage() {
   const [snapToken, setSnapToken] = useState(null);
   const [orderId, setOrderId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [distanceShipping, setDistanceShipping] = useState(null);
 
   const placeOrder = async () => {
     if (!profile) return alert('Harap login terlebih dahulu');
@@ -222,14 +223,24 @@ export default function CartPage() {
         </div>
 
         {/* Order Summary (Right Column) */}
-        <aside className="md:col-span-1">
+        <aside className="md:col-span-1 space-y-4">
+          {/* Shipping Calculator */}
+          <ShippingCalculator
+            onShippingCalculated={setDistanceShipping}
+            orderTotal={total()}
+          />
+
+          {/* Order Total */}
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 sticky top-24">
-            <h2 className="text-xl font-semibold text-gray-800 border-b pb-4 mb-4">Order Summary</h2>
+            <h2 className="text-xl font-semibold border-b pb-4 mb-4" style={{ color: '#065D5F' }}>
+              Ringkasan Pesanan
+            </h2>
+
             {(() => {
-              const totalQty = getTotalQuantity(items);
-              const shipping = calculateShipping(totalQty);
               const subtotal = total();
-              const grandTotal = subtotal + shipping.fee;
+              const shippingCost = distanceShipping?.finalCost ?? 0;
+              const grandTotal = subtotal + shippingCost;
+              const totalQty = items.reduce((sum, i) => sum + i.quantity, 0);
 
               return (
                 <div className="space-y-3">
@@ -239,19 +250,27 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Ongkir</span>
-                    <span className={`font-medium ${shipping.color}`}>{formatShippingFee(shipping.fee)}</span>
+                    {distanceShipping ? (
+                      <span
+                        className="font-medium"
+                        style={{ color: distanceShipping.isFreeShipping ? '#10B981' : '#03BEB0' }}
+                      >
+                        {distanceShipping.isFreeShipping ? 'GRATIS' : `Rp ${shippingCost.toLocaleString()}`}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400 text-sm">Hitung alamat dulu</span>
+                    )}
                   </div>
-                  {shipping.nextTierInfo && (
-                    <p className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
-                      💡 {shipping.nextTierInfo}
+                  {distanceShipping && !distanceShipping.isFreeShipping && (
+                    <p className="text-xs text-gray-500 bg-gray-50 p-2 rounded">
+                      📍 {distanceShipping.distance.km} km × Rp 3.000/km
                     </p>
                   )}
                   <div className="border-t pt-4 mt-4">
-                    <div className="flex justify-between text-lg font-bold text-gray-900">
+                    <div className="flex justify-between text-lg font-bold" style={{ color: '#065D5F' }}>
                       <span>Total</span>
                       <span>Rp {grandTotal.toLocaleString()}</span>
                     </div>
-                    <p className={`text-sm mt-1 ${shipping.color}`}>{shipping.label}</p>
                   </div>
                 </div>
               );
