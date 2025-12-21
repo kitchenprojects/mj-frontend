@@ -44,59 +44,174 @@ export default function AdminReportPage() {
         }
     }, [startDate, endDate]);
 
-    // Export to Excel
+    // Export to Excel - Comprehensive Accounting Report
     const exportToExcel = () => {
         if (!report || report.orders.length === 0) {
             showError('Tidak ada data untuk diekspor');
             return;
         }
 
-        // Prepare orders data
-        const ordersData = report.orders.map(o => ({
-            'Order ID': o.order_id,
-            'Tanggal': format(new Date(o.order_date), 'dd/MM/yyyy HH:mm'),
-            'Pelanggan': o.customer_name || '-',
-            'Telepon': o.customer_phone || '-',
-            'Status': o.status,
-            'Pembayaran': o.payment_status || 'Unpaid',
-            'Total (Rp)': Number(o.total_amount)
-        }));
+        const wb = XLSX.utils.book_new();
+        const reportDate = format(new Date(), 'dd MMMM yyyy HH:mm');
+        const periodStart = format(new Date(startDate), 'dd MMMM yyyy');
+        const periodEnd = format(new Date(endDate), 'dd MMMM yyyy');
 
-        // Prepare summary data
-        const summaryData = [
-            { 'Metrik': 'Total Orders', 'Nilai': report.summary.totalOrders },
-            { 'Metrik': 'Total Revenue', 'Nilai': `Rp ${report.summary.totalRevenue.toLocaleString()}` },
-            { 'Metrik': 'Orders Completed', 'Nilai': report.summary.completedOrders },
-            { 'Metrik': 'Orders Pending', 'Nilai': report.summary.pendingOrders },
-            { 'Metrik': 'Unique Customers', 'Nilai': report.summary.uniqueCustomers },
+        // ========== SHEET 1: COVER & EXECUTIVE SUMMARY ==========
+        const coverData = [
+            [''],
+            ['MJ KITCHEN'],
+            ['LAPORAN PENJUALAN'],
+            [''],
+            ['Periode Laporan:', `${periodStart} - ${periodEnd}`],
+            ['Tanggal Cetak:', reportDate],
+            [''],
+            ['═══════════════════════════════════════════════════════════════'],
+            [''],
+            ['RINGKASAN EKSEKUTIF'],
+            [''],
+            ['Indikator', 'Nilai', 'Keterangan'],
+            ['Total Pendapatan', `Rp ${report.summary.totalRevenue.toLocaleString()}`, 'Pendapatan kotor dari seluruh transaksi'],
+            ['Total Transaksi', report.summary.totalOrders, 'Jumlah order yang masuk'],
+            ['Order Selesai', report.summary.completedOrders, 'Order dengan status Delivered'],
+            ['Order Pending', report.summary.pendingOrders, 'Order yang masih diproses'],
+            ['Jumlah Pelanggan', report.summary.uniqueCustomers, 'Pelanggan unik yang bertransaksi'],
+            [''],
+            ['ANALISIS PERFORMA'],
+            [''],
+            ['Rata-rata Nilai Order', report.summary.totalOrders > 0 ? `Rp ${Math.round(report.summary.totalRevenue / report.summary.totalOrders).toLocaleString()}` : 'Rp 0', 'Total Revenue / Total Order'],
+            ['Tingkat Completion', report.summary.totalOrders > 0 ? `${Math.round((report.summary.completedOrders / report.summary.totalOrders) * 100)}%` : '0%', 'Order Selesai / Total Order'],
+            [''],
+        ];
+        const coverWs = XLSX.utils.aoa_to_sheet(coverData);
+        coverWs['!cols'] = [{ wch: 25 }, { wch: 30 }, { wch: 40 }];
+        XLSX.utils.book_append_sheet(wb, coverWs, 'Ringkasan Eksekutif');
+
+        // ========== SHEET 2: DETAILED ORDERS ==========
+        const ordersHeader = [
+            ['DAFTAR TRANSAKSI DETAIL'],
+            [`Periode: ${periodStart} - ${periodEnd}`],
+            [''],
+            ['No', 'Order ID', 'Tanggal Order', 'Waktu', 'Nama Pelanggan', 'No. Telepon', 'Status Order', 'Status Bayar', 'Tanggal Bayar', 'Total (Rp)']
+        ];
+        const ordersRows = report.orders.map((o, idx) => [
+            idx + 1,
+            o.order_id,
+            format(new Date(o.order_date), 'dd/MM/yyyy'),
+            format(new Date(o.order_date), 'HH:mm'),
+            o.customer_name || '-',
+            o.customer_phone || '-',
+            o.status,
+            o.payment_status || 'Unpaid',
+            o.payment_date ? format(new Date(o.payment_date), 'dd/MM/yyyy HH:mm') : '-',
+            Number(o.total_amount)
+        ]);
+
+        // Add summary row
+        const totalRevenue = report.orders.reduce((sum, o) => sum + Number(o.total_amount), 0);
+        const ordersSummary = [
+            [''],
+            ['', '', '', '', '', '', '', '', 'TOTAL:', totalRevenue]
         ];
 
-        // Prepare top items data
-        const topItemsData = report.topItems.map((item, idx) => ({
-            'Rank': idx + 1,
-            'Menu': item.menu_name,
-            'Total Terjual': Number(item.total_sold),
-            'Total Revenue (Rp)': Number(item.total_revenue)
-        }));
+        const ordersWs = XLSX.utils.aoa_to_sheet([...ordersHeader, ...ordersRows, ...ordersSummary]);
+        ordersWs['!cols'] = [
+            { wch: 5 }, { wch: 38 }, { wch: 12 }, { wch: 8 }, { wch: 20 }, { wch: 15 },
+            { wch: 15 }, { wch: 12 }, { wch: 18 }, { wch: 15 }
+        ];
+        XLSX.utils.book_append_sheet(wb, ordersWs, 'Detail Transaksi');
 
-        // Create workbook
-        const wb = XLSX.utils.book_new();
+        // ========== SHEET 3: DAILY SALES BREAKDOWN ==========
+        const dailyHeader = [
+            ['REKAPITULASI PENJUALAN HARIAN'],
+            [`Periode: ${periodStart} - ${periodEnd}`],
+            [''],
+            ['No', 'Tanggal', 'Jumlah Order', 'Total Pendapatan (Rp)', 'Rata-rata per Order (Rp)']
+        ];
+        const dailyRows = report.dailySales.map((d, idx) => [
+            idx + 1,
+            format(new Date(d.date), 'dd/MM/yyyy (EEEE)'),
+            Number(d.orders),
+            Number(d.revenue),
+            d.orders > 0 ? Math.round(Number(d.revenue) / Number(d.orders)) : 0
+        ]);
 
-        // Add sheets
-        const summaryWs = XLSX.utils.json_to_sheet(summaryData);
-        const ordersWs = XLSX.utils.json_to_sheet(ordersData);
-        const topItemsWs = XLSX.utils.json_to_sheet(topItemsData);
+        // Daily totals
+        const totalDailyOrders = report.dailySales.reduce((sum, d) => sum + Number(d.orders), 0);
+        const totalDailyRevenue = report.dailySales.reduce((sum, d) => sum + Number(d.revenue), 0);
+        const dailySummary = [
+            [''],
+            ['', 'TOTAL', totalDailyOrders, totalDailyRevenue, totalDailyOrders > 0 ? Math.round(totalDailyRevenue / totalDailyOrders) : 0]
+        ];
 
-        XLSX.utils.book_append_sheet(wb, summaryWs, 'Ringkasan');
-        XLSX.utils.book_append_sheet(wb, ordersWs, 'Daftar Order');
-        XLSX.utils.book_append_sheet(wb, topItemsWs, 'Menu Terlaris');
+        const dailyWs = XLSX.utils.aoa_to_sheet([...dailyHeader, ...dailyRows, ...dailySummary]);
+        dailyWs['!cols'] = [{ wch: 5 }, { wch: 25 }, { wch: 15 }, { wch: 22 }, { wch: 22 }];
+        XLSX.utils.book_append_sheet(wb, dailyWs, 'Penjualan Harian');
+
+        // ========== SHEET 4: MENU PERFORMANCE ==========
+        const menuHeader = [
+            ['ANALISIS PERFORMA MENU'],
+            [`Periode: ${periodStart} - ${periodEnd}`],
+            [''],
+            ['Rank', 'Nama Menu', 'Qty Terjual', 'Total Revenue (Rp)', 'Kontribusi Revenue (%)']
+        ];
+        const totalMenuRevenue = report.topItems.reduce((sum, item) => sum + Number(item.total_revenue), 0);
+        const menuRows = report.topItems.map((item, idx) => [
+            idx + 1,
+            item.menu_name,
+            Number(item.total_sold),
+            Number(item.total_revenue),
+            totalMenuRevenue > 0 ? `${((Number(item.total_revenue) / totalMenuRevenue) * 100).toFixed(1)}%` : '0%'
+        ]);
+
+        const totalMenuQty = report.topItems.reduce((sum, item) => sum + Number(item.total_sold), 0);
+        const menuSummary = [
+            [''],
+            ['', 'TOTAL', totalMenuQty, totalMenuRevenue, '100%']
+        ];
+
+        const menuWs = XLSX.utils.aoa_to_sheet([...menuHeader, ...menuRows, ...menuSummary]);
+        menuWs['!cols'] = [{ wch: 6 }, { wch: 30 }, { wch: 12 }, { wch: 20 }, { wch: 20 }];
+        XLSX.utils.book_append_sheet(wb, menuWs, 'Performa Menu');
+
+        // ========== SHEET 5: STATUS BREAKDOWN ==========
+        const statusCounts = {};
+        const paymentCounts = {};
+        report.orders.forEach(o => {
+            statusCounts[o.status] = (statusCounts[o.status] || 0) + 1;
+            const payStatus = o.payment_status || 'Unpaid';
+            paymentCounts[payStatus] = (paymentCounts[payStatus] || 0) + 1;
+        });
+
+        const statusData = [
+            ['BREAKDOWN STATUS ORDER & PEMBAYARAN'],
+            [`Periode: ${periodStart} - ${periodEnd}`],
+            [''],
+            ['STATUS ORDER'],
+            ['Status', 'Jumlah', 'Persentase'],
+            ...Object.entries(statusCounts).map(([status, count]) => [
+                status,
+                count,
+                `${((count / report.orders.length) * 100).toFixed(1)}%`
+            ]),
+            [''],
+            ['STATUS PEMBAYARAN'],
+            ['Status', 'Jumlah', 'Persentase'],
+            ...Object.entries(paymentCounts).map(([status, count]) => [
+                status,
+                count,
+                `${((count / report.orders.length) * 100).toFixed(1)}%`
+            ]),
+        ];
+        const statusWs = XLSX.utils.aoa_to_sheet(statusData);
+        statusWs['!cols'] = [{ wch: 20 }, { wch: 12 }, { wch: 12 }];
+        XLSX.utils.book_append_sheet(wb, statusWs, 'Breakdown Status');
 
         // Generate filename
-        const fileName = `Laporan_Penjualan_${startDate}_${endDate}.xlsx`;
+        const fileName = `Laporan_Penjualan_MJKitchen_${startDate}_to_${endDate}.xlsx`;
 
         // Download
         XLSX.writeFile(wb, fileName);
-        showSuccess('Laporan berhasil diexport!');
+        showSuccess('Laporan komprehensif berhasil diexport!');
     };
 
     // Quick date presets
