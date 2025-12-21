@@ -13,8 +13,9 @@ import Layout from './components/Layout';
 import AdminLayout from './components/AdminLayout';
 import { useAuthStore } from './store/authStore';
 import AdminProfilePage from './pages/admin/AdminProfilePage';
-import AdminAddressPage from './pages/admin/AdminAddressPage'; 
+import AdminAddressPage from './pages/admin/AdminAddressPage';
 import ProfilePage from './pages/ProfilePage';
+import ReceiptPage from './pages/ReceiptPage';
 import AdminCategoryPage from './pages/admin/AdminCategoryPage';
 import AdminGalleryPage from './pages/admin/AdminGalleryPage';
 
@@ -70,6 +71,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/orders" element={<PrivateRoute><OrderTrackingPage /></PrivateRoute>} />
+          <Route path="/orders/:orderId/receipt" element={<PrivateRoute><ReceiptPage /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
         </Route>
 

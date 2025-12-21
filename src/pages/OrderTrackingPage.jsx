@@ -1,5 +1,6 @@
 // client/src/pages/OrderTrackingPage.jsx
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { FiPackage, FiTruck, FiCheckCircle } from 'react-icons/fi'; // Minimalist icons for status
@@ -12,26 +13,26 @@ const getStatusVisuals = (status) => {
   switch (normalizedStatus) {
     case 'pending':
     case 'confirmed':
-      return { 
-        icon: <FiPackage className="text-yellow-600" />, 
+      return {
+        icon: <FiPackage className="text-yellow-600" />,
         color: 'text-yellow-700 bg-yellow-100',
         text: 'Confirmed'
       };
     case 'out for delivery':
-      return { 
-        icon: <FiTruck className="text-blue-600" />, 
+      return {
+        icon: <FiTruck className="text-blue-600" />,
         color: 'text-blue-700 bg-blue-100',
         text: 'Out for Delivery'
       };
     case 'delivered':
-      return { 
-        icon: <FiCheckCircle className="text-emerald-600" />, 
+      return {
+        icon: <FiCheckCircle className="text-emerald-600" />,
         color: 'text-emerald-700 bg-emerald-100',
         text: 'Delivered'
       };
     default:
-      return { 
-        icon: <FiPackage className="text-gray-600" />, 
+      return {
+        icon: <FiPackage className="text-gray-600" />,
         color: 'text-gray-700 bg-gray-100',
         text: status
       };
@@ -56,7 +57,7 @@ export default function OrderTrackingPage() {
   return (
     <div className="py-8">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">My Orders</h1>
-      
+
       {loading && (
         <div className="text-center text-gray-500">Loading orders...</div>
       )}
@@ -90,7 +91,7 @@ export default function OrderTrackingPage() {
                         Placed on {format(new Date(o.order_date), 'dd MMMM yyyy, p')}
                       </p>
                     </div>
-                    
+
                     {/* Status and Total */}
                     <div className="flex items-center gap-6">
                       <div className="text-right">
@@ -100,7 +101,7 @@ export default function OrderTrackingPage() {
                           {statusVisuals.text}
                         </span>
                       </div>
-                      
+
                       <div className="text-right">
                         <p className="text-sm text-gray-500">Total</p>
                         <p className="text-lg font-bold text-emerald-600">
@@ -110,12 +111,12 @@ export default function OrderTrackingPage() {
                     </div>
                   </div>
                 </div>
-                {/* You could add an order details link/button here in the future */}
-                {/* <div className="bg-gray-50 px-6 py-3 border-t">
-                  <Link to={`/orders/${o.order_id}`} className="text-sm font-medium text-emerald-600 hover:text-emerald-500">
-                    View Details
+                {/* View Receipt Link */}
+                <div className="bg-gray-50 px-6 py-3 border-t">
+                  <Link to={`/orders/${o.order_id}/receipt`} className="text-sm font-medium text-emerald-600 hover:text-emerald-500">
+                    Lihat Struk →
                   </Link>
-                </div> */}
+                </div>
               </div>
             );
           })}

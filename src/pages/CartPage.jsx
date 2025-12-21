@@ -11,17 +11,18 @@ export default function CartPage() {
   const navigate = useNavigate();
   const [showPayment, setShowPayment] = useState(false);
   const [snapToken, setSnapToken] = useState(null);
+  const [orderId, setOrderId] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const placeOrder = async () => {
     if (!profile) return alert('Harap login terlebih dahulu');
-    
+
     setLoading(true);
     try {
       // Get user's address
       const addrs = await api.get('/users/me/addresses');
       const defaultAddress = addrs.data[0];
-      
+
       if (!defaultAddress) {
         alert('Tambahkan alamat (termasuk Kota) terlebih dahulu');
         setLoading(false);
@@ -44,10 +45,11 @@ export default function CartPage() {
 
       // Create order and get snap token
       const { data } = await api.post('/orders', payload);
-      
+
+      setOrderId(data.order_id);
       setSnapToken(data.snap_token);
       setShowPayment(true);
-      
+
     } catch (error) {
       console.error("Failed to place order:", error);
       alert('Gagal membuat pesanan. Silakan coba lagi.');
@@ -61,22 +63,22 @@ export default function CartPage() {
     if (snapToken && showPayment && window.snap) {
       window.snap.embed(snapToken, {
         embedId: 'snap-container',
-        onSuccess: function(result) {
+        onSuccess: function (result) {
           console.log('Payment success:', result);
+          const currentOrderId = result.order_id;
           clear();
           setShowPayment(false);
-          alert('Pembayaran berhasil!');
-          navigate('/orders');
+          navigate(`/orders/${currentOrderId}/receipt`);
         },
-        onPending: function(result) {
+        onPending: function (result) {
           console.log('Payment pending:', result);
           alert('Menunggu pembayaran...');
         },
-        onError: function(result) {
+        onError: function (result) {
           console.log('Payment error:', result);
           alert('Pembayaran gagal. Silakan coba lagi.');
         },
-        onClose: function() {
+        onClose: function () {
           console.log('Payment popup closed');
           setShowPayment(false);
         }
@@ -90,7 +92,7 @@ export default function CartPage() {
       updateQty(item.menu_id, item.quantity - 1);
     }
   };
-  
+
   const handleIncrement = (item) => {
     updateQty(item.menu_id, item.quantity + 1);
   };
@@ -102,17 +104,17 @@ export default function CartPage() {
         <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col">
           <div className="flex justify-between items-center p-4 border-b bg-white flex-shrink-0">
             <h2 className="text-xl font-semibold">Complete Payment</h2>
-            <button 
+            <button
               onClick={() => setShowPayment(false)}
               className="text-gray-400 hover:text-gray-600"
             >
               <FiX size={24} />
             </button>
           </div>
-          
+
           {/* Snap Embed Container - sized for Midtrans widget */}
-          <div 
-            id="snap-container" 
+          <div
+            id="snap-container"
             className="flex-1 overflow-y-auto"
             style={{ minHeight: '480px' }}
           ></div>
@@ -128,8 +130,8 @@ export default function CartPage() {
         <FiShoppingCart size={60} className="text-gray-400 mb-4" />
         <h1 className="text-2xl font-semibold text-gray-800 mb-2">Your Cart is Empty</h1>
         <p className="text-gray-500 mb-6">Looks like you haven't added anything to your cart yet.</p>
-        <Link 
-          to="/menu" 
+        <Link
+          to="/menu"
           className="px-6 py-2 bg-emerald-600 text-white font-semibold rounded-md hover:bg-emerald-700 transition-colors"
         >
           Continue Shopping
@@ -142,29 +144,29 @@ export default function CartPage() {
   return (
     <div className="py-8">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Your Cart</h1>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        
+
         {/* Item List (Left Column) */}
         <div className="md:col-span-2 space-y-4">
           {items.map((item) => (
             <div key={item.menu_id} className="flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
               {/* Image */}
-              <img 
-                src={item.image_url || (item.images && item.images[0]?.image_url) || 'https://via.placeholder.com/100'} 
+              <img
+                src={item.image_url || (item.images && item.images[0]?.image_url) || 'https://via.placeholder.com/100'}
                 alt={item.menu_name}
                 className="w-20 h-20 rounded-md object-cover"
               />
-              
+
               {/* Item Details */}
               <div className="flex-grow">
                 <h3 className="font-semibold text-gray-800">{item.menu_name}</h3>
                 <p className="text-sm text-emerald-600 font-medium">Rp {Number(item.price).toLocaleString()}</p>
               </div>
-              
+
               {/* Quantity Controls */}
               <div className="flex items-center gap-2 border border-gray-300 rounded-md">
-                <button 
+                <button
                   onClick={() => handleDecrement(item)}
                   disabled={item.quantity <= 1}
                   className="px-2 py-1 text-gray-600 hover:text-emerald-600 disabled:opacity-50"
@@ -172,16 +174,16 @@ export default function CartPage() {
                   <FiMinus size={16} />
                 </button>
                 <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
-                <button 
+                <button
                   onClick={() => handleIncrement(item)}
                   className="px-2 py-1 text-gray-600 hover:text-emerald-600"
                 >
                   <FiPlus size={16} />
                 </button>
               </div>
-              
+
               {/* Remove Button */}
-              <button 
+              <button
                 onClick={() => removeItem(item.menu_id)}
                 className="text-gray-400 hover:text-red-500 transition-colors"
                 aria-label={`Remove ${item.menu_name}`}
@@ -212,8 +214,8 @@ export default function CartPage() {
                 </div>
               </div>
             </div>
-            <button 
-              className="w-full mt-6 px-4 py-3 bg-emerald-600 text-white font-semibold rounded-md hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" 
+            <button
+              className="w-full mt-6 px-4 py-3 bg-emerald-600 text-white font-semibold rounded-md hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={placeOrder}
               disabled={loading}
             >
