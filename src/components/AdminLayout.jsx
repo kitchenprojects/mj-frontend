@@ -9,7 +9,8 @@ import {
   FiChevronsRight,
   FiUsers,
   FiTag,
-  FiFileText
+  FiFileText,
+  FiPlusSquare
 } from 'react-icons/fi';
 
 /**
@@ -76,6 +77,12 @@ export default function AdminLayout() {
             to="/admin/categories"
             icon={FiTag}
             label="Categories"
+            isExpanded={isExpanded}
+          />
+          <AdminNavLink
+            to="/admin/addons"
+            icon={FiPlusSquare}
+            label="Add-ons"
             isExpanded={isExpanded}
           />
           <AdminNavLink
