@@ -232,22 +232,40 @@ export default function ReceiptPage() {
                     </div>
 
                     {/* Total */}
-                    <div className="px-6 py-5 border-t border-gray-100" style={{ background: 'linear-gradient(135deg, #E6F7F6 0%, #F0F7F7 100%)' }}>
-                        <div className="flex justify-between items-center mb-2">
-                            <span className="text-gray-500">Subtotal</span>
-                            <span className="text-gray-700 font-medium">Rp {Number(order.total_amount).toLocaleString('id-ID')}</span>
-                        </div>
-                        <div className="flex justify-between items-center mb-3">
-                            <span className="text-gray-500">Ongkos Kirim</span>
-                            <span className="font-semibold" style={{ color: '#03BEB0' }}>Gratis</span>
-                        </div>
-                        <div className="flex justify-between items-center pt-3 border-t border-teal-200">
-                            <span className="text-lg font-bold" style={{ color: '#065D5F' }}>Total</span>
-                            <span className="text-xl font-black" style={{ color: '#03BEB0' }}>
-                                Rp {Number(order.total_amount).toLocaleString('id-ID')}
-                            </span>
-                        </div>
-                    </div>
+                    {(() => {
+                        // Calculate items subtotal
+                        const itemsSubtotal = order.items?.reduce((sum, item) => sum + Number(item.subtotal || 0), 0) || 0;
+                        // Get shipping cost from order (default to 0 if not set)
+                        const shippingCost = Number(order.shipping_cost) || 0;
+                        // Grand total = items + shipping (or use total_amount if shipping not stored separately)
+                        const grandTotal = shippingCost > 0 ? itemsSubtotal + shippingCost : Number(order.total_amount);
+                        const isFreeShipping = shippingCost === 0 && itemsSubtotal >= 500000;
+
+                        return (
+                            <div className="px-6 py-5 border-t border-gray-100" style={{ background: 'linear-gradient(135deg, #E6F7F6 0%, #F0F7F7 100%)' }}>
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-gray-500">Subtotal</span>
+                                    <span className="text-gray-700 font-medium">Rp {itemsSubtotal.toLocaleString('id-ID')}</span>
+                                </div>
+                                <div className="flex justify-between items-center mb-3">
+                                    <span className="text-gray-500">Ongkos Kirim</span>
+                                    {shippingCost > 0 ? (
+                                        <span className="font-semibold text-gray-700">Rp {shippingCost.toLocaleString('id-ID')}</span>
+                                    ) : isFreeShipping ? (
+                                        <span className="font-semibold" style={{ color: '#10B981' }}>Gratis (Min. Rp 500.000)</span>
+                                    ) : (
+                                        <span className="font-semibold" style={{ color: '#03BEB0' }}>Gratis</span>
+                                    )}
+                                </div>
+                                <div className="flex justify-between items-center pt-3 border-t border-teal-200">
+                                    <span className="text-lg font-bold" style={{ color: '#065D5F' }}>Total</span>
+                                    <span className="text-xl font-black" style={{ color: '#03BEB0' }}>
+                                        Rp {grandTotal.toLocaleString('id-ID')}
+                                    </span>
+                                </div>
+                            </div>
+                        );
+                    })()}
 
                     {/* Footer */}
                     <div className="p-6 text-center border-t border-gray-100">

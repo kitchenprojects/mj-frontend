@@ -56,10 +56,14 @@ export default function CartPage() {
         price: i.price
       }));
 
+      // Get shipping cost from state (finalCost from ShippingCalculator)
+      const shippingCost = distanceShipping?.finalCost ?? 0;
+
       const payload = {
         user_id: profile.id,
         address_id: defaultAddress.address_id,
         items: itemsWithName,
+        shipping_cost: shippingCost,
       };
 
       const { data } = await api.post('/orders', payload);
