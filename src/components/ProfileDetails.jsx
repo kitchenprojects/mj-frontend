@@ -216,7 +216,15 @@ export default function ProfileDetails() {
             </button>
           </div>
         ) : (
-          <div className="px-5 py-4 border-t border-gray-100">
+          <div className="px-5 py-4 border-t border-gray-100 space-y-3">
+            <button
+              type="button"
+              onClick={logout}
+              className="w-full py-3 px-4 text-gray-600 font-medium rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 border border-gray-200"
+            >
+              <span className="material-symbols-outlined text-[18px]">logout</span>
+              Keluar dari Akun
+            </button>
             <button
               type="button"
               onClick={onDeleteAccount}

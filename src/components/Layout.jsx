@@ -1,8 +1,9 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
-import Footer from './Footer'; // Import the new Footer
-import WhatsAppButton from './WhatsAppButton'; // Import the new Button
+import Footer from './Footer';
+import WhatsAppButton from './WhatsAppButton';
+import FloatingCart from './FloatingCart';
 
 export default function Layout() {
   return (
@@ -16,10 +17,9 @@ export default function Layout() {
 
       <Footer />
 
-      {/* The WhatsApp button is fixed relative to the viewport,
-          so it lives outside the main page flow. */}
-      {/* TODO: Add your real phone number here */}
-      <WhatsAppButton phoneNumber="6281234567890" />
+      {/* Floating buttons - fixed relative to the viewport */}
+      <FloatingCart />
+      <WhatsAppButton phoneNumber="6288970788847" />
     </div>
   );
 }

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { useCartStore } from '../store/cartStore';
 
 export default function Navbar() {
   const { user } = useAuthStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const itemCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
 
   const navLinkClass = ({ isActive }) =>
     `flex items-center gap-1.5 py-2 md:py-0 md:pb-1 font-medium transition-colors duration-200 ${isActive
@@ -33,7 +31,7 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Nav - Centered/Right aligned */}
+          {/* Desktop Nav - Right aligned */}
           <nav className="hidden md:flex items-center gap-8">
             <NavLink to="/" className={navLinkClass}>
               <span className="material-symbols-outlined text-[18px]">home</span>
@@ -49,22 +47,6 @@ export default function Navbar() {
                 Pesanan
               </NavLink>
             )}
-            <NavLink to="/cart" className="relative">
-              <div className="flex items-center gap-1.5 text-gray-600 hover:text-teal-500 transition-colors font-medium">
-                <div className="relative">
-                  <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
-                  {itemCount > 0 && (
-                    <span
-                      className="absolute -top-2 -right-2 text-white text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full font-bold px-1"
-                      style={{ backgroundColor: '#03BEB0' }}
-                    >
-                      {itemCount}
-                    </span>
-                  )}
-                </div>
-                Keranjang
-              </div>
-            </NavLink>
           </nav>
 
           {/* Desktop Auth - Far right */}
@@ -90,19 +72,8 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile: Cart & Hamburger */}
-          <div className="flex items-center gap-2 md:hidden">
-            <NavLink to="/cart" className="relative p-2 text-gray-600 hover:text-teal-500 transition-colors">
-              <span className="material-symbols-outlined text-[24px]">shopping_cart</span>
-              {itemCount > 0 && (
-                <span
-                  className="absolute top-0 right-0 text-white text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full font-bold px-1"
-                  style={{ backgroundColor: '#03BEB0' }}
-                >
-                  {itemCount}
-                </span>
-              )}
-            </NavLink>
+          {/* Mobile: Hamburger */}
+          <div className="flex items-center md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
@@ -128,10 +99,6 @@ export default function Navbar() {
             <NavLink to="/menu" className={navLinkClass} onClick={closeMenu}>
               <span className="material-symbols-outlined text-[18px]">restaurant_menu</span>
               Menu
-            </NavLink>
-            <NavLink to="/cart" className={navLinkClass} onClick={closeMenu}>
-              <span className="material-symbols-outlined text-[18px]">shopping_cart</span>
-              Keranjang {itemCount > 0 && <span className="ml-1 text-xs px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: '#03BEB0' }}>{itemCount}</span>}
             </NavLink>
             {user ? (
               <>
