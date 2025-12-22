@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiMapPin, FiTruck, FiX, FiCheck, FiLoader } from 'react-icons/fi';
 import api from '../services/api';
 
@@ -6,11 +6,18 @@ import api from '../services/api';
  * Distance-based shipping calculator component
  * Uses distancematrix.ai to calculate distance and Rp 3,000/km rate
  */
-export default function ShippingCalculator({ onShippingCalculated, orderTotal = 0 }) {
-    const [address, setAddress] = useState('');
+export default function ShippingCalculator({ onShippingCalculated, orderTotal = 0, defaultAddress = '' }) {
+    const [address, setAddress] = useState(defaultAddress);
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
+
+    // Update address when defaultAddress prop changes
+    useEffect(() => {
+        if (defaultAddress && !address) {
+            setAddress(defaultAddress);
+        }
+    }, [defaultAddress]);
 
     const calculateShipping = async () => {
         if (!address.trim()) {
