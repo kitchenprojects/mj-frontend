@@ -72,7 +72,7 @@ export default function OrderTrackingPage() {
   }, [profile]);
 
   return (
-    <div className="min-h-screen -mx-4 md:-mx-6 lg:-mx-8 -my-8">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <div className="w-full">
         <div
