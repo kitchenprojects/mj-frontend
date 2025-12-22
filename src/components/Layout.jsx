@@ -10,9 +10,9 @@ export default function Layout() {
       <Navbar />
 
       {/* This 'main' section is set to grow, pushing the footer down.
-        The content inside is constrained by 'max-w-5xl'.
+        The content inside is constrained by 'max-w-7xl' for better desktop experience.
       */}
-      <main className="flex-grow w-full max-w-5xl mx-auto p-4 md:p-6">
+      <main className="flex-grow w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <Outlet />
       </main>
 

@@ -41,7 +41,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen -mx-4 md:-mx-6 -mt-8 flex flex-col">
+    <div className="min-h-screen -mx-4 md:-mx-6 lg:-mx-8 -my-8 flex flex-col">
       {/* Hero Section */}
       <div className="w-full">
         <div
