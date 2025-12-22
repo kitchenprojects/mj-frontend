@@ -78,7 +78,17 @@ export default function CartPage() {
 
   // Initialize Snap when token is available
   useEffect(() => {
-    if (snapToken && showPayment && window.snap) {
+    if (showPayment && snapToken) {
+      // Check if Midtrans Snap is loaded
+      if (typeof window.snap === 'undefined') {
+        console.error('Midtrans Snap not loaded! Check internet connection and script in index.html');
+        alert('Gagal memuat pembayaran. Periksa koneksi internet Anda.');
+        setShowPayment(false);
+        return;
+      }
+
+      console.log('Initializing Snap with token:', snapToken);
+
       window.snap.embed(snapToken, {
         embedId: 'snap-container',
         onSuccess: function (result) {
@@ -101,6 +111,8 @@ export default function CartPage() {
           setShowPayment(false);
         }
       });
+    } else if (showPayment && !snapToken) {
+      console.error('No snap token received from backend!');
     }
   }, [snapToken, showPayment]);
 
@@ -135,9 +147,24 @@ export default function CartPage() {
 
           <div
             id="snap-container"
-            className="flex-1 overflow-y-auto"
+            className="flex-1 overflow-y-auto bg-white"
             style={{ minHeight: '480px' }}
-          ></div>
+          >
+            {/* Loading/Error state while Snap loads */}
+            {!snapToken && (
+              <div className="flex flex-col items-center justify-center h-full text-center p-6">
+                <span className="material-symbols-outlined text-[48px] text-red-400 mb-4">error</span>
+                <p className="text-gray-600 font-medium">Gagal mendapatkan token pembayaran</p>
+                <p className="text-gray-400 text-sm mt-1">Periksa konfigurasi Midtrans di backend</p>
+              </div>
+            )}
+            {snapToken && (
+              <div id="snap-loading" className="flex flex-col items-center justify-center h-full">
+                <span className="material-symbols-outlined text-[48px] text-teal-500 animate-spin">progress_activity</span>
+                <p className="text-gray-500 mt-4">Memuat pembayaran...</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
