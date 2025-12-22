@@ -13,7 +13,7 @@ export default function FloatingCart() {
     return (
         <Link
             to="/cart"
-            className="fixed bottom-6 right-6 z-40 flex items-center gap-3 px-5 py-3 text-white rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300 animate-bounce-once"
+            className="fixed bottom-24 right-6 z-40 flex items-center gap-3 px-5 py-3 text-white rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300"
             style={{
                 background: 'linear-gradient(135deg, #03BEB0 0%, #065D5F 100%)',
                 boxShadow: '0 10px 40px rgba(3, 190, 176, 0.4)'
