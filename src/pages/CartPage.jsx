@@ -91,9 +91,18 @@ export default function CartPage() {
 
       window.snap.embed(snapToken, {
         embedId: 'snap-container',
-        onSuccess: function (result) {
+        onSuccess: async function (result) {
           console.log('Payment success:', result);
           const currentOrderId = result.order_id;
+
+          // Update payment status to Paid immediately
+          try {
+            await api.put(`/orders/${currentOrderId}/payment`, { payment_status: 'Paid' });
+            console.log('Payment status updated to Paid');
+          } catch (err) {
+            console.error('Failed to update payment status:', err);
+          }
+
           clear();
           setShowPayment(false);
           navigate(`/orders/${currentOrderId}/receipt`);
