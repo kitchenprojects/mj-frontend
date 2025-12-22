@@ -76,7 +76,7 @@ export default function AdminDashboard() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-          <p className="text-gray-500 text-sm">Selamat datang di panel admin MJ Kitchen</p>
+          <p className="text-gray-500 text-sm">Selamat datang di panel admin Dapur Nekti</p>
         </div>
         <button
           onClick={loadStats}

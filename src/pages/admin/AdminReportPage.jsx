@@ -59,7 +59,7 @@ export default function AdminReportPage() {
         // ========== SHEET 1: COVER & EXECUTIVE SUMMARY ==========
         const coverData = [
             [''],
-            ['MJ KITCHEN'],
+            ['DAPUR NEKTI'],
             ['LAPORAN PENJUALAN'],
             [''],
             ['Periode Laporan:', `${periodStart} - ${periodEnd}`],

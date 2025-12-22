@@ -27,7 +27,7 @@ export default function Navbar() {
               <span className="text-white font-black text-lg">MJ</span>
             </div>
             <span className="text-xl font-bold hidden sm:block" style={{ color: '#065D5F' }}>
-              MJ Kitchen
+              Dapur Nekti
             </span>
           </Link>
 

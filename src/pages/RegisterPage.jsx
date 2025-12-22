@@ -49,7 +49,7 @@ function RegisterPage() {
           }
         }
 
-        showSuccess('Pendaftaran berhasil! Selamat datang di MJ Kitchen.');
+        showSuccess('Pendaftaran berhasil! Selamat datang di Dapur Nekti.');
         navigate('/menu');
       } else {
         // Email confirmation required

@@ -108,7 +108,7 @@ export default function HomePage() {
       <section className="py-12 text-white" style={{ background: 'linear-gradient(135deg, #03BEB0 0%, #02A99C 100%)' }}>
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-center text-2xl md:text-3xl font-bold mb-8">
-            Komitmen MJ Kitchen Untukmu
+            Komitmen Dapur Nekti Untukmu
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
@@ -181,7 +181,7 @@ export default function HomePage() {
       <section className="py-12" style={{ backgroundColor: '#F0F7F7' }}>
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center" style={{ color: '#065D5F' }}>
-            Kenapa Pilih MJ Kitchen?
+            Kenapa Pilih Dapur Nekti?
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-2xl text-center shadow-sm">
@@ -217,7 +217,7 @@ export default function HomePage() {
               Butuh Pesanan Cepat dan Terpercaya?
             </h2>
             <p className="text-white/80 mb-6 max-w-xl mx-auto">
-              Tenang! MJ Kitchen siap layani pesanan dadakan dalam jumlah besar.
+              Tenang! Dapur Nekti siap layani pesanan dadakan dalam jumlah besar.
             </p>
             <Link
               to="/menu"

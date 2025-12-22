@@ -14,7 +14,7 @@ export default function Footer() {
               <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
                 <span style={{ color: '#03BEB0' }} className="font-bold text-lg">MJ</span>
               </div>
-              <span className="text-xl font-bold">MJ Kitchen</span>
+              <span className="text-xl font-bold">Dapur Nekti</span>
             </div>
             <p className="text-white/70 text-sm mb-4">
               Catering & nasi box berkualitas untuk segala acara. Siap antar, hangat, dan terpercaya!
@@ -69,7 +69,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="border-t border-white/10 mt-8 pt-8 text-center text-white/50 text-sm">
-          <p>© {new Date().getFullYear()} MJ Kitchen. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Dapur Nekti. All rights reserved.</p>
         </div>
       </div>
     </footer>

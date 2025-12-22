@@ -74,7 +74,7 @@ function LoginPage() {
               Masuk
             </h1>
             <p className="text-white/80 text-sm md:text-lg font-medium leading-relaxed max-w-xl mx-auto">
-              Selamat datang kembali di MJ Kitchen
+              Selamat datang kembali di Dapur Nekti
             </p>
           </div>
         </div>

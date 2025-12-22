@@ -148,7 +148,7 @@ export default function ReceiptPage() {
                     >
                         <div className="flex items-center justify-center gap-2 mb-2">
                             <span className="material-symbols-outlined text-[28px] print:text-gray-800">restaurant</span>
-                            <h1 className="text-2xl font-black tracking-tight">MJ Kitchen</h1>
+                            <h1 className="text-2xl font-black tracking-tight">Dapur Nekti</h1>
                         </div>
                         <p className="text-white/80 text-sm print:text-gray-500">Jl. Contoh Alamat No. 123, Jakarta</p>
                         <p className="text-white/80 text-sm print:text-gray-500">Telp: (021) 1234-5678</p>
@@ -255,7 +255,7 @@ export default function ReceiptPage() {
                             <span className="material-symbols-outlined text-[20px]">favorite</span>
                             <p className="font-semibold">Terima kasih!</p>
                         </div>
-                        <p className="text-gray-500 text-sm">Terima kasih telah berbelanja di MJ Kitchen</p>
+                        <p className="text-gray-500 text-sm">Terima kasih telah berbelanja di Dapur Nekti</p>
                         <p className="text-gray-400 text-xs mt-1">Struk ini merupakan bukti pembayaran yang sah</p>
                     </div>
                 </div>

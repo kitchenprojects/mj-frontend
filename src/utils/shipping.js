@@ -1,4 +1,4 @@
-// Shipping rate calculator utility for MJ Kitchen
+// Shipping rate calculator utility for Dapur Nekti
 // Based on quantity-based free shipping rules
 
 /**
