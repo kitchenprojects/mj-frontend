@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
-import { showSuccess, showError, showConfirm } from '../utils/swal';
+import { showSuccess, showError, confirmAction } from '../utils/swal';
 
 // Address Modal Component
 const AddressModal = ({ address, onClose, onSave }) => {
@@ -216,11 +216,13 @@ export default function AddressManager() {
   };
 
   const handleDelete = async (addressId) => {
-    const result = await showConfirm(
+    const isConfirmed = await confirmAction(
       'Hapus Alamat?',
-      'Alamat ini akan dihapus secara permanen.'
+      'Alamat ini akan dihapus secara permanen.',
+      'Ya, Hapus',
+      'Batal'
     );
-    if (result.isConfirmed) {
+    if (isConfirmed) {
       try {
         await api.delete(`/users/me/addresses/${addressId}`);
         showSuccess('Alamat berhasil dihapus!');

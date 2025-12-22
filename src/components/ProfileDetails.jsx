@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuthStore } from '../store/authStore';
 import api from '../services/api';
-import { showSuccess, showError, showConfirm } from '../utils/swal';
+import { showSuccess, showError, confirmAction } from '../utils/swal';
 
 export default function ProfileDetails() {
   const profile = useAuthStore((s) => s.profile);
@@ -40,11 +40,13 @@ export default function ProfileDetails() {
   };
 
   const onDeleteAccount = async () => {
-    const result = await showConfirm(
+    const isConfirmed = await confirmAction(
       'Hapus Akun?',
-      'Tindakan ini permanen dan tidak dapat dibatalkan. Semua data Anda akan dihapus.'
+      'Tindakan ini permanen dan tidak dapat dibatalkan. Semua data Anda akan dihapus.',
+      'Ya, Hapus',
+      'Batal'
     );
-    if (result.isConfirmed) {
+    if (isConfirmed) {
       try {
         await api.delete('/users/me');
         showSuccess('Akun berhasil dihapus.');
