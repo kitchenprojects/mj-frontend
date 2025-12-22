@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../services/api';
 import { format } from 'date-fns';
-import { FiPrinter, FiArrowLeft, FiCheckCircle, FiClock } from 'react-icons/fi';
+import { id } from 'date-fns/locale';
 
 export default function ReceiptPage() {
     const { orderId } = useParams();
@@ -32,32 +32,51 @@ export default function ReceiptPage() {
         window.print();
     };
 
+    // Loading State
     if (loading) {
         return (
-            <div className="py-20 text-center text-gray-500">
-                <div className="animate-spin w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-                Loading receipt...
+            <div className="min-h-screen flex flex-col items-center justify-center">
+                <span className="material-symbols-outlined text-[48px] text-gray-300 animate-spin">progress_activity</span>
+                <p className="text-gray-400 mt-4">Memuat struk...</p>
             </div>
         );
     }
 
+    // Error State
     if (error) {
         return (
-            <div className="py-20 text-center">
-                <p className="text-red-500 mb-4">{error}</p>
-                <Link to="/orders" className="text-emerald-600 hover:underline">
-                    ← Kembali ke My Orders
+            <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
+                <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6 bg-red-50">
+                    <span className="material-symbols-outlined text-[40px] text-red-400">error</span>
+                </div>
+                <p className="text-red-500 font-semibold mb-4">{error}</p>
+                <Link
+                    to="/orders"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold transition-colors hover:opacity-80"
+                    style={{ color: '#03BEB0' }}
+                >
+                    <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+                    Kembali ke Pesanan
                 </Link>
             </div>
         );
     }
 
+    // Not Found State
     if (!order) {
         return (
-            <div className="py-20 text-center">
-                <p className="text-gray-500 mb-4">Order tidak ditemukan</p>
-                <Link to="/orders" className="text-emerald-600 hover:underline">
-                    ← Kembali ke My Orders
+            <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
+                <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: 'linear-gradient(135deg, #E6F7F6 0%, #F0F7F7 100%)' }}>
+                    <span className="material-symbols-outlined text-[40px]" style={{ color: '#03BEB0' }}>search_off</span>
+                </div>
+                <p className="text-gray-600 font-semibold mb-4">Order tidak ditemukan</p>
+                <Link
+                    to="/orders"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold transition-colors hover:opacity-80"
+                    style={{ color: '#03BEB0' }}
+                >
+                    <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+                    Kembali ke Pesanan
                 </Link>
             </div>
         );
@@ -66,150 +85,202 @@ export default function ReceiptPage() {
     const isPaid = order.payment_status === 'Paid';
 
     return (
-        <div className="py-8 max-w-2xl mx-auto">
-            {/* Print button - hidden on print */}
-            <div className="print:hidden flex justify-between items-center mb-6">
-                <Link to="/orders" className="flex items-center gap-2 text-gray-600 hover:text-emerald-600">
-                    <FiArrowLeft /> Kembali ke My Orders
-                </Link>
-                <button
-                    onClick={handlePrint}
-                    className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors"
+        <div className="min-h-screen">
+            {/* Hero Section */}
+            <div className="w-full print:hidden">
+                <div
+                    className="relative flex h-[180px] md:h-[220px] w-full flex-col justify-center items-center overflow-hidden"
+                    style={{
+                        background: isPaid
+                            ? `linear-gradient(135deg, rgba(3, 190, 176, 0.95) 0%, rgba(6, 93, 95, 0.98) 100%)`
+                            : `linear-gradient(135deg, rgba(245, 158, 11, 0.95) 0%, rgba(180, 83, 9, 0.98) 100%)`,
+                    }}
                 >
-                    <FiPrinter /> Print Struk
-                </button>
+                    <div className="absolute inset-0 opacity-10">
+                        <div className="absolute inset-0" style={{
+                            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                        }} />
+                    </div>
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                        <div className="absolute -top-20 -right-20 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
+                        <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+                    </div>
+                    <div className="flex flex-col gap-2 text-center px-4 max-w-3xl relative z-10">
+                        <div className="w-16 h-16 mx-auto rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-4 border-white/30 shadow-2xl">
+                            <span className="material-symbols-outlined text-white text-3xl">
+                                {isPaid ? 'check_circle' : 'schedule'}
+                            </span>
+                        </div>
+                        <h1 className="text-white text-2xl md:text-4xl font-black leading-tight tracking-tight">
+                            {isPaid ? 'Pembayaran Berhasil' : 'Menunggu Pembayaran'}
+                        </h1>
+                    </div>
+                </div>
             </div>
 
-            {/* Receipt Card */}
-            <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden print:shadow-none print:border-0">
-                {/* Header */}
-                <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white p-6 text-center print:bg-white print:text-black">
-                    <h1 className="text-2xl font-bold">MJ Kitchen</h1>
-                    <p className="text-emerald-100 text-sm mt-1 print:text-gray-500">Jl. Contoh Alamat No. 123, Jakarta</p>
-                    <p className="text-emerald-100 text-sm print:text-gray-500">Telp: (021) 1234-5678</p>
+            {/* Content */}
+            <div className="max-w-2xl mx-auto px-4 md:px-6 py-8 print:py-0 print:max-w-none">
+                {/* Action Buttons - hidden on print */}
+                <div className="print:hidden flex justify-between items-center mb-6">
+                    <Link
+                        to="/orders"
+                        className="flex items-center gap-2 text-gray-500 hover:text-teal-600 transition-colors text-sm font-medium"
+                    >
+                        <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+                        Kembali ke Pesanan
+                    </Link>
+                    <button
+                        onClick={handlePrint}
+                        className="flex items-center gap-2 px-4 py-2.5 text-white rounded-xl font-semibold transition-all hover:opacity-90"
+                        style={{ backgroundColor: '#03BEB0' }}
+                    >
+                        <span className="material-symbols-outlined text-[18px]">print</span>
+                        Cetak Struk
+                    </button>
                 </div>
 
-                {/* Payment Status Badge */}
-                <div className="px-6 py-4 border-b border-gray-200 flex justify-center">
-                    {isPaid ? (
-                        <span className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full font-medium">
-                            <FiCheckCircle /> Pembayaran Berhasil
-                        </span>
-                    ) : (
-                        <span className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-700 rounded-full font-medium">
-                            <FiClock /> Menunggu Pembayaran
-                        </span>
+                {/* Receipt Card */}
+                <div className="bg-white border border-gray-100 rounded-2xl shadow-lg overflow-hidden print:shadow-none print:border-0 print:rounded-none">
+                    {/* Header */}
+                    <div
+                        className="text-white p-6 text-center print:bg-white print:text-black"
+                        style={{ background: 'linear-gradient(135deg, #03BEB0 0%, #065D5F 100%)' }}
+                    >
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                            <span className="material-symbols-outlined text-[28px] print:text-gray-800">restaurant</span>
+                            <h1 className="text-2xl font-black tracking-tight">MJ Kitchen</h1>
+                        </div>
+                        <p className="text-white/80 text-sm print:text-gray-500">Jl. Contoh Alamat No. 123, Jakarta</p>
+                        <p className="text-white/80 text-sm print:text-gray-500">Telp: (021) 1234-5678</p>
+                    </div>
+
+                    {/* Payment Status Badge */}
+                    <div className="px-6 py-4 border-b border-gray-100 flex justify-center">
+                        {isPaid ? (
+                            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-50 text-teal-700 rounded-xl font-semibold border border-teal-200">
+                                <span className="material-symbols-outlined text-[18px]">verified</span>
+                                Pembayaran Berhasil
+                            </span>
+                        ) : (
+                            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-50 text-amber-700 rounded-xl font-semibold border border-amber-200">
+                                <span className="material-symbols-outlined text-[18px]">schedule</span>
+                                Menunggu Pembayaran
+                            </span>
+                        )}
+                    </div>
+
+                    {/* Order Info */}
+                    <div className="p-6 border-b border-gray-100">
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="bg-gray-50 rounded-xl p-3">
+                                <p className="text-gray-400 text-xs mb-1">No. Order</p>
+                                <p className="font-mono font-bold text-gray-800">#{order.order_id.substring(0, 8).toUpperCase()}</p>
+                            </div>
+                            <div className="bg-gray-50 rounded-xl p-3 text-right">
+                                <p className="text-gray-400 text-xs mb-1">Tanggal</p>
+                                <p className="font-semibold text-gray-800">
+                                    {format(new Date(order.order_date), 'dd MMM yyyy, HH:mm', { locale: id })}
+                                </p>
+                            </div>
+                            <div className="bg-gray-50 rounded-xl p-3">
+                                <p className="text-gray-400 text-xs mb-1">Pelanggan</p>
+                                <p className="font-semibold text-gray-800">{order.user_name || 'Customer'}</p>
+                            </div>
+                            <div className="bg-gray-50 rounded-xl p-3 text-right">
+                                <p className="text-gray-400 text-xs mb-1">Status</p>
+                                <p className="font-semibold text-gray-800">{order.status}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Delivery Address */}
+                    {order.street && (
+                        <div className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                            <div className="flex items-start gap-3">
+                                <span className="material-symbols-outlined text-[20px]" style={{ color: '#03BEB0' }}>location_on</span>
+                                <div>
+                                    <p className="text-xs text-gray-400 mb-1">Alamat Pengiriman</p>
+                                    <p className="text-sm text-gray-800 font-medium">
+                                        {order.street}{order.city ? `, ${order.city}` : ''}{order.postal_code ? ` ${order.postal_code}` : ''}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     )}
-                </div>
 
-                {/* Order Info */}
-                <div className="p-6 border-b border-gray-200">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                            <p className="text-gray-500">No. Order</p>
-                            <p className="font-mono font-medium text-gray-800">#{order.order_id.substring(0, 8).toUpperCase()}</p>
+                    {/* Items List */}
+                    <div className="p-6">
+                        <div className="flex items-center gap-2 mb-4">
+                            <span className="material-symbols-outlined text-[18px]" style={{ color: '#03BEB0' }}>receipt_long</span>
+                            <h3 className="font-bold text-gray-800">Detail Pesanan</h3>
                         </div>
-                        <div className="text-right">
-                            <p className="text-gray-500">Tanggal</p>
-                            <p className="font-medium text-gray-800">
-                                {format(new Date(order.order_date), 'dd MMM yyyy, HH:mm')}
-                            </p>
-                        </div>
-                        <div>
-                            <p className="text-gray-500">Pelanggan</p>
-                            <p className="font-medium text-gray-800">{order.user_name || 'Customer'}</p>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-gray-500">Status</p>
-                            <p className="font-medium text-gray-800">{order.status}</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Delivery Address */}
-                {order.street && (
-                    <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                        <p className="text-sm text-gray-500 mb-1">Alamat Pengiriman</p>
-                        <p className="text-sm text-gray-800">
-                            {order.street}{order.city ? `, ${order.city}` : ''}{order.postal_code ? ` ${order.postal_code}` : ''}
-                        </p>
-                    </div>
-                )}
-
-                {/* Items List */}
-                <div className="p-6">
-                    <h3 className="font-semibold text-gray-800 mb-4">Detail Pesanan</h3>
-                    <table className="w-full text-sm">
-                        <thead>
-                            <tr className="text-left text-gray-500 border-b">
-                                <th className="pb-2">Item</th>
-                                <th className="pb-2 text-center">Qty</th>
-                                <th className="pb-2 text-right">Harga</th>
-                                <th className="pb-2 text-right">Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                        <div className="space-y-3">
                             {order.items?.map((item, idx) => (
-                                <tr key={idx} className="border-b border-gray-100">
-                                    <td className="py-3 text-gray-800">{item.menu_name || 'Menu Item'}</td>
-                                    <td className="py-3 text-center text-gray-600">{item.quantity}</td>
-                                    <td className="py-3 text-right text-gray-600">
-                                        Rp {Number(item.price_each).toLocaleString()}
-                                    </td>
-                                    <td className="py-3 text-right text-gray-800 font-medium">
-                                        Rp {Number(item.subtotal).toLocaleString()}
-                                    </td>
-                                </tr>
+                                <div key={idx} className="flex justify-between items-center py-3 border-b border-gray-100 last:border-0">
+                                    <div className="flex-1">
+                                        <p className="font-medium text-gray-800">{item.menu_name || 'Menu Item'}</p>
+                                        <p className="text-sm text-gray-400">
+                                            {item.quantity} × Rp {Number(item.price_each).toLocaleString('id-ID')}
+                                        </p>
+                                    </div>
+                                    <p className="font-bold text-gray-800">
+                                        Rp {Number(item.subtotal).toLocaleString('id-ID')}
+                                    </p>
+                                </div>
                             ))}
-                        </tbody>
-                    </table>
-                </div>
+                        </div>
+                    </div>
 
-                {/* Total */}
-                <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                    <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Subtotal</span>
-                        <span className="text-gray-800">Rp {Number(order.total_amount).toLocaleString()}</span>
+                    {/* Total */}
+                    <div className="px-6 py-5 border-t border-gray-100" style={{ background: 'linear-gradient(135deg, #E6F7F6 0%, #F0F7F7 100%)' }}>
+                        <div className="flex justify-between items-center mb-2">
+                            <span className="text-gray-500">Subtotal</span>
+                            <span className="text-gray-700 font-medium">Rp {Number(order.total_amount).toLocaleString('id-ID')}</span>
+                        </div>
+                        <div className="flex justify-between items-center mb-3">
+                            <span className="text-gray-500">Ongkos Kirim</span>
+                            <span className="font-semibold" style={{ color: '#03BEB0' }}>Gratis</span>
+                        </div>
+                        <div className="flex justify-between items-center pt-3 border-t border-teal-200">
+                            <span className="text-lg font-bold" style={{ color: '#065D5F' }}>Total</span>
+                            <span className="text-xl font-black" style={{ color: '#03BEB0' }}>
+                                Rp {Number(order.total_amount).toLocaleString('id-ID')}
+                            </span>
+                        </div>
                     </div>
-                    <div className="flex justify-between items-center mt-2">
-                        <span className="text-gray-600">Ongkos Kirim</span>
-                        <span className="text-gray-800">Gratis</span>
-                    </div>
-                    <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-300">
-                        <span className="text-lg font-bold text-gray-800">Total</span>
-                        <span className="text-lg font-bold text-emerald-600">
-                            Rp {Number(order.total_amount).toLocaleString()}
-                        </span>
-                    </div>
-                </div>
 
-                {/* Footer */}
-                <div className="p-6 text-center text-gray-500 text-sm border-t border-gray-200">
-                    <p className="mb-2">Terima kasih telah berbelanja di MJ Kitchen!</p>
-                    <p className="text-xs">Struk ini merupakan bukti pembayaran yang sah.</p>
+                    {/* Footer */}
+                    <div className="p-6 text-center border-t border-gray-100">
+                        <div className="flex items-center justify-center gap-2 mb-2" style={{ color: '#03BEB0' }}>
+                            <span className="material-symbols-outlined text-[20px]">favorite</span>
+                            <p className="font-semibold">Terima kasih!</p>
+                        </div>
+                        <p className="text-gray-500 text-sm">Terima kasih telah berbelanja di MJ Kitchen</p>
+                        <p className="text-gray-400 text-xs mt-1">Struk ini merupakan bukti pembayaran yang sah</p>
+                    </div>
                 </div>
             </div>
 
             {/* Print Styles */}
             <style>{`
-        @media print {
-          body * {
-            visibility: hidden;
-          }
-          .print\\:hidden {
-            display: none !important;
-          }
-          #root, #root * {
-            visibility: visible;
-          }
-          #root {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-          }
-        }
-      `}</style>
+                @media print {
+                    body * {
+                        visibility: hidden;
+                    }
+                    .print\\:hidden {
+                        display: none !important;
+                    }
+                    #root, #root * {
+                        visibility: visible;
+                    }
+                    #root {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                    }
+                }
+            `}</style>
         </div>
     );
 }
