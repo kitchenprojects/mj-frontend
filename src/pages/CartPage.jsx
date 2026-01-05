@@ -167,8 +167,9 @@ export default function CartPage() {
         </div>
 
         <div
-          className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[92vh] overflow-hidden flex flex-col relative"
+          className="bg-white rounded-3xl shadow-2xl w-full max-h-[92vh] overflow-hidden flex flex-col relative"
           style={{
+            maxWidth: '392px',
             animation: 'slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(3, 190, 176, 0.1)'
           }}
