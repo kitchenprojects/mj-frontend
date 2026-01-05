@@ -38,6 +38,12 @@ export default function CartPage() {
   const placeOrder = async () => {
     if (!profile) return alert('Harap login terlebih dahulu');
 
+    // Check if shipping has been calculated
+    if (!distanceShipping) {
+      alert('Harap hitung ongkos kirim terlebih dahulu sebelum melanjutkan pembayaran.');
+      return;
+    }
+
     setLoading(true);
     try {
       const addrs = await api.get('/users/me/addresses');
@@ -92,6 +98,12 @@ export default function CartPage() {
       }
 
       console.log('Initializing Snap with token:', snapToken);
+
+      // Remove loading element before Snap embeds
+      const loadingEl = document.getElementById('snap-loading');
+      if (loadingEl) {
+        loadingEl.remove();
+      }
 
       window.snap.embed(snapToken, {
         embedId: 'snap-container',
