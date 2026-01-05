@@ -142,43 +142,154 @@ export default function CartPage() {
 
   // Payment Modal
   if (showPayment) {
+    const subtotalAmount = total();
+    const shippingAmount = distanceShipping?.finalCost ?? 0;
+    const grandTotalAmount = subtotalAmount + shippingAmount;
+
     return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="fixed inset-0 bg-gradient-to-br from-black/60 via-black/50 to-teal-900/40 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-teal-400/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-teal-600/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        </div>
+
+        <div
+          className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[92vh] overflow-hidden flex flex-col relative"
+          style={{
+            animation: 'slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(3, 190, 176, 0.1)'
+          }}
+        >
+          {/* Premium Header */}
           <div
-            className="flex justify-between items-center p-5 flex-shrink-0"
+            className="relative p-6 flex-shrink-0 overflow-hidden"
             style={{ background: 'linear-gradient(135deg, #03BEB0 0%, #065D5F 100%)' }}
           >
-            <h2 className="text-xl font-bold text-white">Selesaikan Pembayaran</h2>
-            <button
-              onClick={() => setShowPayment(false)}
-              className="w-8 h-8 rounded-lg bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
-            >
-              <span className="material-symbols-outlined text-white text-[20px]">close</span>
-            </button>
+            {/* Header decorative pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute inset-0" style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              }} />
+            </div>
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+
+            <div className="flex items-center justify-between relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 shadow-lg">
+                  <span className="material-symbols-outlined text-white text-2xl">payments</span>
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-white tracking-tight">Selesaikan Pembayaran</h2>
+                  <p className="text-white/70 text-sm">Pilih metode pembayaran favorit Anda</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowPayment(false)}
+                className="w-10 h-10 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition-all duration-200 border border-white/20 hover:scale-105 active:scale-95"
+              >
+                <span className="material-symbols-outlined text-white text-xl">close</span>
+              </button>
+            </div>
+
+            {/* Order Info Mini Card */}
+            <div className="mt-5 bg-white/15 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="material-symbols-outlined text-white/80 text-lg">receipt_long</span>
+                  <div>
+                    <p className="text-white/70 text-xs font-medium">Total Pembayaran</p>
+                    <p className="text-white text-xl font-black tracking-tight">
+                      Rp {grandTotalAmount.toLocaleString('id-ID')}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end text-right">
+                  <span className="text-white/70 text-xs">{items.length} item</span>
+                  {shippingAmount > 0 && (
+                    <span className="text-white/70 text-xs">+ Ongkir Rp {shippingAmount.toLocaleString('id-ID')}</span>
+                  )}
+                  {distanceShipping?.isFreeShipping && (
+                    <span className="text-emerald-300 text-xs font-medium flex items-center gap-1">
+                      <span className="material-symbols-outlined text-xs">local_shipping</span>
+                      Gratis Ongkir
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
 
+          {/* Snap Container */}
           <div
             id="snap-container"
-            className="flex-1 overflow-y-auto bg-white"
-            style={{ minHeight: '480px' }}
+            className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-white"
+            style={{ minHeight: '420px' }}
           >
             {/* Loading/Error state while Snap loads */}
             {!snapToken && (
-              <div className="flex flex-col items-center justify-center h-full text-center p-6">
-                <span className="material-symbols-outlined text-[48px] text-red-400 mb-4">error</span>
-                <p className="text-gray-600 font-medium">Gagal mendapatkan token pembayaran</p>
-                <p className="text-gray-400 text-sm mt-1">Periksa konfigurasi Midtrans di backend</p>
+              <div className="flex flex-col items-center justify-center h-full text-center p-8">
+                <div className="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center mb-5">
+                  <span className="material-symbols-outlined text-[40px] text-red-400">error</span>
+                </div>
+                <p className="text-gray-700 font-semibold text-lg">Gagal Memuat Pembayaran</p>
+                <p className="text-gray-400 text-sm mt-2 max-w-xs">Tidak dapat terhubung ke layanan pembayaran. Periksa konfigurasi Midtrans.</p>
+                <button
+                  onClick={() => setShowPayment(false)}
+                  className="mt-6 px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors"
+                >
+                  Kembali
+                </button>
               </div>
             )}
             {snapToken && (
-              <div id="snap-loading" className="flex flex-col items-center justify-center h-full">
-                <span className="material-symbols-outlined text-[48px] text-teal-500 animate-spin">progress_activity</span>
-                <p className="text-gray-500 mt-4">Memuat pembayaran...</p>
+              <div id="snap-loading" className="flex flex-col items-center justify-center h-full p-8">
+                <div className="relative">
+                  <div className="w-20 h-20 rounded-full border-4 border-teal-100 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[36px] text-teal-500 animate-spin">progress_activity</span>
+                  </div>
+                  <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-teal-500 animate-spin" style={{ animationDuration: '1.5s' }}></div>
+                </div>
+                <p className="text-gray-600 mt-5 font-medium">Menyiapkan Pembayaran...</p>
+                <p className="text-gray-400 text-sm mt-1">Mohon tunggu sebentar</p>
               </div>
             )}
           </div>
+
+          {/* Footer Trust Badges */}
+          <div className="flex-shrink-0 px-6 py-4 bg-gray-50 border-t border-gray-100">
+            <div className="flex items-center justify-center gap-4 text-gray-400 text-xs">
+              <div className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-sm text-teal-500">verified_user</span>
+                <span>Transaksi Aman</span>
+              </div>
+              <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+              <div className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-sm text-teal-500">lock</span>
+                <span>Enkripsi SSL</span>
+              </div>
+              <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+              <div className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-sm text-teal-500">credit_card</span>
+                <span>Midtrans</span>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Animation Keyframes */}
+        <style>{`
+          @keyframes slideUpFade {
+            from {
+              opacity: 0;
+              transform: translateY(20px) scale(0.98);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+        `}</style>
       </div>
     );
   }
