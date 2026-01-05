@@ -277,7 +277,9 @@ export default function OrderTrackingPage() {
                     <div className="flex items-center gap-2 text-sm text-gray-500">
                       <span className="material-symbols-outlined text-[16px]">location_on</span>
                       <span className="truncate max-w-[200px] md:max-w-none">
-                        {o.delivery_address || 'Alamat tidak tersedia'}
+                        {o.street
+                          ? `${o.street}${o.city ? `, ${o.city}` : ''}${o.postal_code ? ` ${o.postal_code}` : ''}`
+                          : 'Alamat tidak tersedia'}
                       </span>
                     </div>
                     <Link
