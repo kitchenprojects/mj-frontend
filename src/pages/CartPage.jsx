@@ -111,13 +111,25 @@ export default function CartPage() {
           console.log('Payment success:', result);
           const currentOrderId = result.order_id;
 
-          // Update payment status to Paid immediately
-          try {
-            await api.put(`/orders/${currentOrderId}/payment`, { payment_status: 'Paid' });
-            console.log('Payment status updated to Paid');
-          } catch (err) {
-            console.error('Failed to update payment status:', err);
-          }
+          // Update payment status to Paid with retry logic
+          const updatePaymentWithRetry = async (retries = 2) => {
+            for (let i = 0; i < retries; i++) {
+              try {
+                await api.put(`/orders/${currentOrderId}/payment`, { payment_status: 'Paid' });
+                console.log('Payment status updated to Paid');
+                return true;
+              } catch (err) {
+                console.error(`Failed to update payment status (attempt ${i + 1}):`, err.response?.data || err.message);
+                if (i < retries - 1) {
+                  // Wait 1 second before retrying
+                  await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+              }
+            }
+            return false;
+          };
+
+          await updatePaymentWithRetry();
 
           clear();
           setShowPayment(false);

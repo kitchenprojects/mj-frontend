@@ -150,7 +150,7 @@ export default function ReceiptPage() {
                             <span className="material-symbols-outlined text-[28px] print:text-gray-800">restaurant</span>
                             <h1 className="text-2xl font-black tracking-tight">Dapur Nekti</h1>
                         </div>
-                        <p className="text-white/80 text-sm print:text-gray-500">Jl. Contoh Alamat No. 123, Jakarta</p>
+                        <p className="text-white/80 text-sm print:text-gray-500">Setiabudi Regency no.G 110, Cihideung, Kec. Parongpong, Kabupaten Bandung Barat, Jawa Barat 40559</p>
                         <p className="text-white/80 text-sm print:text-gray-500">Telp: (021) 1234-5678</p>
                     </div>
 
