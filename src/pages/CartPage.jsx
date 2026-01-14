@@ -15,25 +15,6 @@ export default function CartPage() {
   const [orderId, setOrderId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [distanceShipping, setDistanceShipping] = useState(null);
-  const [userDefaultAddress, setUserDefaultAddress] = useState('');
-
-  // Fetch user's default address on mount
-  useEffect(() => {
-    const fetchDefaultAddress = async () => {
-      if (!profile) return;
-      try {
-        const { data } = await api.get('/users/me/addresses');
-        const defaultAddr = data.find(addr => addr.is_default) || data[0];
-        if (defaultAddr) {
-          const fullAddress = [defaultAddr.street, defaultAddr.city].filter(Boolean).join(', ');
-          setUserDefaultAddress(fullAddress);
-        }
-      } catch (error) {
-        console.error('Failed to fetch addresses:', error);
-      }
-    };
-    fetchDefaultAddress();
-  }, [profile]);
 
   const placeOrder = async () => {
     if (!profile) return alert('Harap login terlebih dahulu');
@@ -512,7 +493,6 @@ export default function CartPage() {
             <ShippingCalculator
               onShippingCalculated={setDistanceShipping}
               orderTotal={total()}
-              defaultAddress={userDefaultAddress}
             />
 
             {/* Order Total */}
