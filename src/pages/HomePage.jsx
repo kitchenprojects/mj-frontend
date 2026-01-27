@@ -213,7 +213,7 @@ export default function HomePage() {
       <section className="py-12">
         <div className="max-w-4xl mx-auto px-4">
           <div className="rounded-3xl p-8 md:p-12 text-center text-white" style={{ background: 'linear-gradient(135deg, #065D5F 0%, #054D4F 100%)' }}>
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
               Butuh Pesanan Cepat dan Terpercaya?
             </h2>
             <p className="text-white/80 mb-6 max-w-xl mx-auto">
