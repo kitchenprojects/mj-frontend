@@ -1,6 +1,6 @@
 // client/src/pages/OrderTrackingPage.jsx
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { format } from 'date-fns';
@@ -58,8 +58,11 @@ const getStatusVisuals = (status) => {
 
 export default function OrderTrackingPage() {
   const profile = useAuthStore((s) => s.profile);
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showPayment, setShowPayment] = useState(false);
+  const [activeOrder, setActiveOrder] = useState(null);
 
   useEffect(() => {
     if (profile?.id) {
@@ -71,8 +74,202 @@ export default function OrderTrackingPage() {
     }
   }, [profile]);
 
+  // Handle pay now click
+  const handlePayNow = (order) => {
+    if (!order.snap_token) {
+      alert('Token pembayaran tidak tersedia. Silakan hubungi customer service.');
+      return;
+    }
+    setActiveOrder(order);
+    setShowPayment(true);
+  };
+
+  // Initialize Snap when payment modal is shown
+  useEffect(() => {
+    if (showPayment && activeOrder?.snap_token) {
+      // Check if Midtrans Snap is loaded
+      if (typeof window.snap === 'undefined') {
+        console.error('Midtrans Snap not loaded!');
+        alert('Gagal memuat pembayaran. Periksa koneksi internet Anda.');
+        setShowPayment(false);
+        return;
+      }
+
+      console.log('Initializing Snap with token:', activeOrder.snap_token);
+
+      // Remove loading element before Snap embeds
+      const loadingEl = document.getElementById('snap-loading');
+      if (loadingEl) {
+        loadingEl.remove();
+      }
+
+      window.snap.embed(activeOrder.snap_token, {
+        embedId: 'snap-container',
+        onSuccess: async function (result) {
+          console.log('Payment success:', result);
+          const currentOrderId = result.order_id;
+
+          // Update payment status to Paid with retry logic
+          const updatePaymentWithRetry = async (retries = 2) => {
+            for (let i = 0; i < retries; i++) {
+              try {
+                await api.put(`/orders/${currentOrderId}/payment`, { payment_status: 'Paid' });
+                console.log('Payment status updated to Paid');
+                return true;
+              } catch (err) {
+                console.error(`Failed to update payment status (attempt ${i + 1}):`, err.response?.data || err.message);
+                if (i < retries - 1) {
+                  await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+              }
+            }
+            return false;
+          };
+
+          await updatePaymentWithRetry();
+          setShowPayment(false);
+          setActiveOrder(null);
+          navigate(`/orders/${currentOrderId}/receipt`);
+        },
+        onPending: function (result) {
+          console.log('Payment pending:', result);
+          alert('Menunggu pembayaran...');
+        },
+        onError: function (result) {
+          console.log('Payment error:', result);
+          alert('Pembayaran gagal. Silakan coba lagi.');
+        },
+        onClose: function () {
+          console.log('Payment popup closed');
+          setShowPayment(false);
+          setActiveOrder(null);
+        }
+      });
+    }
+  }, [showPayment, activeOrder, navigate]);
+
   return (
     <div className="min-h-screen">
+      {/* Payment Modal */}
+      {showPayment && activeOrder && (
+        <div className="fixed inset-0 bg-gradient-to-br from-black/60 via-black/50 to-teal-900/40 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          {/* Decorative background elements */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute -top-40 -right-40 w-96 h-96 bg-teal-400/10 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-teal-600/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          </div>
+
+          <div
+            className="bg-white rounded-3xl shadow-2xl w-full max-h-[92vh] overflow-hidden flex flex-col relative"
+            style={{
+              maxWidth: '392px',
+              animation: 'slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(3, 190, 176, 0.1)'
+            }}
+          >
+            {/* Premium Header */}
+            <div
+              className="relative p-6 flex-shrink-0 overflow-hidden"
+              style={{ background: 'linear-gradient(135deg, #03BEB0 0%, #065D5F 100%)' }}
+            >
+              {/* Header decorative pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                }} />
+              </div>
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 shadow-lg">
+                    <span className="material-symbols-outlined text-white text-2xl">payments</span>
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-white tracking-tight">Selesaikan Pembayaran</h2>
+                    <p className="text-white/70 text-sm">Order #{activeOrder.order_id.substring(0, 8).toUpperCase()}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => { setShowPayment(false); setActiveOrder(null); }}
+                  className="w-10 h-10 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition-all duration-200 border border-white/20 hover:scale-105 active:scale-95"
+                >
+                  <span className="material-symbols-outlined text-white text-xl">close</span>
+                </button>
+              </div>
+
+              {/* Order Info Mini Card */}
+              <div className="mt-5 bg-white/15 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-white/80 text-lg">receipt_long</span>
+                    <div>
+                      <p className="text-white/70 text-xs font-medium">Total Pembayaran</p>
+                      <p className="text-white text-xl font-black tracking-tight">
+                        Rp {Number(activeOrder.total_amount).toLocaleString('id-ID')}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Snap Container */}
+            <div
+              id="snap-container"
+              className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-white"
+              style={{ minHeight: '420px' }}
+            >
+              {/* Loading state while Snap loads */}
+              <div id="snap-loading" className="flex flex-col items-center justify-center h-full p-8">
+                <div className="relative">
+                  <div className="w-20 h-20 rounded-full border-4 border-teal-100 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[36px] text-teal-500 animate-spin">progress_activity</span>
+                  </div>
+                  <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-teal-500 animate-spin" style={{ animationDuration: '1.5s' }}></div>
+                </div>
+                <p className="text-gray-600 mt-5 font-medium">Menyiapkan Pembayaran...</p>
+                <p className="text-gray-400 text-sm mt-1">Mohon tunggu sebentar</p>
+              </div>
+            </div>
+
+            {/* Footer Trust Badges */}
+            <div className="flex-shrink-0 px-6 py-4 bg-gray-50 border-t border-gray-100">
+              <div className="flex items-center justify-center gap-4 text-gray-400 text-xs">
+                <div className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-sm text-teal-500">verified_user</span>
+                  <span>Transaksi Aman</span>
+                </div>
+                <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                <div className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-sm text-teal-500">lock</span>
+                  <span>Enkripsi SSL</span>
+                </div>
+                <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                <div className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-sm text-teal-500">credit_card</span>
+                  <span>Midtrans</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Animation Keyframes */}
+          <style>{`
+            @keyframes slideUpFade {
+              from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+              }
+            }
+          `}</style>
+        </div>
+      )}
+
       {/* Hero Section */}
       <div className="w-full">
         <div
@@ -272,24 +469,58 @@ export default function OrderTrackingPage() {
                     </div>
                   </div>
 
-                  {/* Footer with Link */}
-                  <div className="px-6 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <span className="material-symbols-outlined text-[16px]">location_on</span>
-                      <span className="truncate max-w-[200px] md:max-w-none">
-                        {o.street
-                          ? `${o.street}${o.city ? `, ${o.city}` : ''}${o.postal_code ? ` ${o.postal_code}` : ''}`
-                          : 'Alamat tidak tersedia'}
-                      </span>
+                  {/* Footer with Link and Pay Now Button */}
+                  <div className="px-6 py-3 bg-gray-50 border-t border-gray-100">
+                    <div className="flex items-center justify-between gap-4">
+                      {/* Left: Address and Payment Status */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <span className="material-symbols-outlined text-[16px]">location_on</span>
+                          <span className="truncate max-w-[200px] md:max-w-none">
+                            {o.street
+                              ? `${o.street}${o.city ? `, ${o.city}` : ''}${o.postal_code ? ` ${o.postal_code}` : ''}`
+                              : 'Alamat tidak tersedia'}
+                          </span>
+                        </div>
+                        {/* Payment Status Indicator */}
+                        <div className="mt-1.5 flex items-center gap-1.5">
+                          {o.payment_status === 'Paid' ? (
+                            <span className="inline-flex items-center gap-1 text-xs font-medium text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
+                              <span className="material-symbols-outlined text-[12px]">check_circle</span>
+                              Lunas
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                              <span className="material-symbols-outlined text-[12px]">schedule</span>
+                              Menunggu Pembayaran
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Right: Actions */}
+                      <div className="flex items-center gap-2">
+                        {/* Pay Now Button for unpaid orders */}
+                        {o.payment_status !== 'Paid' && o.snap_token && (
+                          <button
+                            onClick={() => handlePayNow(o)}
+                            className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-lg transition-all hover:opacity-90 shadow-sm"
+                            style={{ backgroundColor: '#03BEB0' }}
+                          >
+                            <span className="material-symbols-outlined text-[16px]">payments</span>
+                            Bayar Sekarang
+                          </button>
+                        )}
+                        <Link
+                          to={`/orders/${o.order_id}/receipt`}
+                          className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:opacity-80"
+                          style={{ color: '#03BEB0' }}
+                        >
+                          Lihat Detail
+                          <span className="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </Link>
+                      </div>
                     </div>
-                    <Link
-                      to={`/orders/${o.order_id}/receipt`}
-                      className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:opacity-80"
-                      style={{ color: '#03BEB0' }}
-                    >
-                      Lihat Detail
-                      <span className="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                    </Link>
                   </div>
                 </div>
               );
