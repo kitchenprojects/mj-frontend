@@ -134,17 +134,17 @@ export default function HomePage() {
       {/* Category Cards */}
       <section className="py-12 md:py-16">
         <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold mb-2 text-center" style={{ color: '#065D5F' }}>
+          <h2 className="text-2xl md:text-4xl font-bold mb-2 text-center" style={{ color: '#065D5F' }}>
             Kategori Terpopuler
           </h2>
           <p className="text-gray-500 text-center mb-8">Pilih kategori menu favoritmu</p>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide justify-center">
             {categories.map((cat) => (
               <Link
                 key={cat.category_id}
                 to={`/menu?category=${cat.category_id}`}
-                className="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all border border-gray-100 hover:border-teal-200 text-center"
+                className="group flex-shrink-0 bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all border border-gray-100 hover:border-teal-200 text-center w-[180px]"
               >
                 {cat.image_url ? (
                   <img
