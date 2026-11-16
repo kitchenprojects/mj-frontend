@@ -37,7 +37,7 @@ function RegisterPage() {
         if (formData.street && formData.city) {
           try {
             await api.post('/users/me/addresses', {
-              label: formData.address_label || 'Rumah',
+              label: formData.address_label || 'Home',
               street: formData.street,
               city: formData.city,
               postal_code: formData.postal_code || '',
@@ -49,11 +49,11 @@ function RegisterPage() {
           }
         }
 
-        showSuccess('Pendaftaran berhasil! Selamat datang di Dapur Nekti.');
+        showSuccess('Registration successful! Welcome to Dapur Nekti.');
         navigate('/menu');
       } else {
         // Email confirmation required
-        showSuccess('Pendaftaran berhasil! Silakan cek email untuk konfirmasi.');
+        showSuccess('Registration successful! Please check your email for confirmation.');
         navigate('/login');
       }
 
@@ -114,10 +114,10 @@ function RegisterPage() {
               </span>
             </div>
             <h1 className="text-white text-3xl md:text-5xl font-black leading-tight tracking-tight">
-              Daftar
+              Register
             </h1>
             <p className="text-white/80 text-sm md:text-lg font-medium leading-relaxed max-w-xl mx-auto">
-              Buat akun untuk mulai pesan menu favorit Anda
+              Create an account to start ordering your favorite menu
             </p>
           </div>
         </div>
@@ -137,7 +137,7 @@ function RegisterPage() {
                   >
                     1
                   </div>
-                  <span className={`text-sm font-medium ${step >= 1 ? 'text-gray-800' : 'text-gray-400'}`}>Akun</span>
+                  <span className={`text-sm font-medium ${step >= 1 ? 'text-gray-800' : 'text-gray-400'}`}>Account</span>
                 </div>
                 <div className="w-12 h-0.5 bg-gray-200">
                   <div className={`h-full transition-all ${step >= 2 ? 'w-full' : 'w-0'}`} style={{ backgroundColor: '#03BEB0' }}></div>
@@ -149,7 +149,7 @@ function RegisterPage() {
                   >
                     2
                   </div>
-                  <span className={`text-sm font-medium ${step >= 2 ? 'text-gray-800' : 'text-gray-400'}`}>Alamat</span>
+                  <span className={`text-sm font-medium ${step >= 2 ? 'text-gray-800' : 'text-gray-400'}`}>Address</span>
                 </div>
               </div>
             </div>
@@ -167,10 +167,10 @@ function RegisterPage() {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-gray-800">
-                    {step === 1 ? 'Informasi Akun' : 'Alamat Pengiriman'}
+                    {step === 1 ? 'Account Information' : 'Delivery Address'}
                   </h2>
                   <p className="text-sm text-gray-500">
-                    {step === 1 ? 'Isi data diri Anda' : 'Tambahkan alamat untuk pengiriman'}
+                    {step === 1 ? 'Enter your personal details' : 'Add an address for delivery'}
                   </p>
                 </div>
               </div>
@@ -199,7 +199,7 @@ function RegisterPage() {
                       <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                       <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                     </svg>
-                    Daftar dengan Google
+                    Sign up with Google
                   </button>
 
                   {/* Separator */}
@@ -209,7 +209,7 @@ function RegisterPage() {
                     </div>
                     <div className="relative flex justify-center text-sm">
                       <span className="px-3 bg-white text-gray-400 font-medium">
-                        atau dengan email
+                        or with email
                       </span>
                     </div>
                   </div>
@@ -218,12 +218,12 @@ function RegisterPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                       <span className="material-symbols-outlined text-[16px] text-gray-400">person</span>
-                      Nama Lengkap <span className="text-red-400">*</span>
+                      Full Name <span className="text-red-400">*</span>
                     </label>
                     <input
                       type="text"
-                      {...register('name', { required: 'Nama wajib diisi' })}
-                      placeholder="Masukkan nama lengkap"
+                      {...register('name', { required: 'Full name is required' })}
+                      placeholder="Enter your full name"
                       className={`w-full px-4 py-3 border rounded-xl text-gray-800 focus:ring-2 focus:ring-teal-100 transition-all ${errors.name ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-teal-500'}`}
                     />
                     {errors.name && <p className="mt-1.5 text-xs text-red-500">{errors.name.message}</p>}
@@ -237,8 +237,8 @@ function RegisterPage() {
                     </label>
                     <input
                       type="email"
-                      {...register('email', { required: 'Email wajib diisi' })}
-                      placeholder="nama@email.com"
+                      {...register('email', { required: 'Email is required' })}
+                      placeholder="name@email.com"
                       className={`w-full px-4 py-3 border rounded-xl text-gray-800 focus:ring-2 focus:ring-teal-100 transition-all ${errors.email ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-teal-500'}`}
                     />
                     {errors.email && <p className="mt-1.5 text-xs text-red-500">{errors.email.message}</p>}
@@ -248,15 +248,15 @@ function RegisterPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                       <span className="material-symbols-outlined text-[16px] text-gray-400">phone</span>
-                      Nomor HP <span className="text-red-400">*</span>
+                      Phone Number <span className="text-red-400">*</span>
                     </label>
                     <input
                       type="tel"
                       {...register('phone_number', {
-                        required: 'Nomor HP wajib diisi',
+                        required: 'Phone number is required',
                         pattern: {
                           value: /^[0-9]{10,14}$/,
-                          message: 'Format nomor HP tidak valid (10-14 digit)'
+                          message: 'Invalid phone number format (10-14 digits)'
                         }
                       })}
                       placeholder="08123456789"
@@ -274,10 +274,10 @@ function RegisterPage() {
                     <input
                       type="password"
                       {...register('password', {
-                        required: 'Password wajib diisi',
-                        minLength: { value: 6, message: 'Password minimal 6 karakter' }
+                        required: 'Password is required',
+                        minLength: { value: 6, message: 'Password must be at least 6 characters' }
                       })}
-                      placeholder="Minimal 6 karakter"
+                      placeholder="At least 6 characters"
                       className={`w-full px-4 py-3 border rounded-xl text-gray-800 focus:ring-2 focus:ring-teal-100 transition-all ${errors.password ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-teal-500'}`}
                     />
                     {errors.password && <p className="mt-1.5 text-xs text-red-500">{errors.password.message}</p>}
@@ -289,7 +289,7 @@ function RegisterPage() {
                     className="w-full flex items-center justify-center gap-2 py-3 px-4 font-semibold text-white rounded-xl transition-all hover:opacity-90"
                     style={{ backgroundColor: '#03BEB0' }}
                   >
-                    <span>Lanjut ke Alamat</span>
+                    <span>Continue to Address</span>
                     <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
                   </button>
                 </>
@@ -302,13 +302,13 @@ function RegisterPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                       <span className="material-symbols-outlined text-[16px] text-gray-400">label</span>
-                      Label Alamat
+                      Address Label
                     </label>
                     <input
                       type="text"
                       {...register('address_label')}
-                      placeholder="Contoh: Rumah, Kantor"
-                      defaultValue="Rumah"
+                      placeholder="e.g. Home, Office"
+                      defaultValue="Home"
                       className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all"
                     />
                   </div>
@@ -317,12 +317,12 @@ function RegisterPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                       <span className="material-symbols-outlined text-[16px] text-gray-400">signpost</span>
-                      Alamat Lengkap <span className="text-red-400">*</span>
+                      Complete Address <span className="text-red-400">*</span>
                     </label>
                     <input
                       type="text"
-                      {...register('street', { required: 'Alamat wajib diisi' })}
-                      placeholder="Jalan, No. Rumah, RT/RW, Kelurahan"
+                      {...register('street', { required: 'Address is required' })}
+                      placeholder="Street, House No., Neighborhood/District"
                       className={`w-full px-4 py-3 border rounded-xl text-gray-800 focus:ring-2 focus:ring-teal-100 transition-all ${errors.street ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-teal-500'}`}
                     />
                     {errors.street && <p className="mt-1.5 text-xs text-red-500">{errors.street.message}</p>}
@@ -333,12 +333,12 @@ function RegisterPage() {
                     <div>
                       <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                         <span className="material-symbols-outlined text-[16px] text-gray-400">location_city</span>
-                        Kota <span className="text-red-400">*</span>
+                        City <span className="text-red-400">*</span>
                       </label>
                       <input
                         type="text"
-                        {...register('city', { required: 'Kota wajib diisi' })}
-                        placeholder="Nama Kota"
+                        {...register('city', { required: 'City is required' })}
+                        placeholder="City Name"
                         className={`w-full px-4 py-3 border rounded-xl text-gray-800 focus:ring-2 focus:ring-teal-100 transition-all ${errors.city ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-teal-500'}`}
                       />
                       {errors.city && <p className="mt-1.5 text-xs text-red-500">{errors.city.message}</p>}
@@ -346,7 +346,7 @@ function RegisterPage() {
                     <div>
                       <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                         <span className="material-symbols-outlined text-[16px] text-gray-400">markunread_mailbox</span>
-                        Kode Pos
+                        Postal Code
                       </label>
                       <input
                         type="text"
@@ -365,7 +365,7 @@ function RegisterPage() {
                       className="flex-1 flex items-center justify-center gap-2 py-3 px-4 font-semibold border-2 border-gray-200 text-gray-600 rounded-xl transition-all hover:bg-gray-50"
                     >
                       <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-                      Kembali
+                      Back
                     </button>
                     <button
                       type="submit"
@@ -376,12 +376,12 @@ function RegisterPage() {
                       {loading ? (
                         <>
                           <span className="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
-                          Memproses...
+                          Processing...
                         </>
                       ) : (
                         <>
                           <span className="material-symbols-outlined text-[18px]">check</span>
-                          Daftar
+                          Register
                         </>
                       )}
                     </button>
@@ -393,9 +393,9 @@ function RegisterPage() {
             {/* Footer */}
             <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 text-center">
               <p className="text-sm text-gray-500">
-                Sudah punya akun?{' '}
+                Already have an account?{' '}
                 <Link to="/login" className="font-semibold transition-colors hover:opacity-80" style={{ color: '#03BEB0' }}>
-                  Masuk
+                  Sign In
                 </Link>
               </p>
             </div>

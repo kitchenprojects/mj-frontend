@@ -17,7 +17,7 @@ export default function Footer() {
               <span className="text-xl font-bold">Dapur Nekti</span>
             </div>
             <p className="text-white/70 text-sm mb-4">
-              Catering & nasi box berkualitas untuk segala acara. Siap antar, hangat, dan terpercaya!
+              Quality catering & meal boxes for any event. Promptly delivered, warm, and trusted!
             </p>
             <div className="flex gap-3">
               <a href="#" className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors">
@@ -34,18 +34,18 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-bold mb-4">Menu Cepat</h4>
+            <h4 className="font-bold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-white/70">
-              <li><Link to="/menu" className="hover:text-white transition-colors">Daftar Menu</Link></li>
-              <li><Link to="/cart" className="hover:text-white transition-colors">Keranjang</Link></li>
-              <li><Link to="/orders" className="hover:text-white transition-colors">Lacak Pesanan</Link></li>
-              <li><Link to="/register" className="hover:text-white transition-colors">Daftar Akun</Link></li>
+              <li><Link to="/menu" className="hover:text-white transition-colors">Menu List</Link></li>
+              <li><Link to="/cart" className="hover:text-white transition-colors">Cart</Link></li>
+              <li><Link to="/orders" className="hover:text-white transition-colors">Track Orders</Link></li>
+              <li><Link to="/register" className="hover:text-white transition-colors">Register Account</Link></li>
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h4 className="font-bold mb-4">Hubungi Kami</h4>
+            <h4 className="font-bold mb-4">Contact Us</h4>
             <ul className="space-y-3 text-white/70">
               <li className="flex items-center gap-2">
                 <FiPhone size={16} />

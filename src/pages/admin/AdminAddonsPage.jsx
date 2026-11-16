@@ -28,7 +28,7 @@ export default function AdminAddonsPage() {
             setAddons(data);
         } catch (error) {
             console.error('Failed to load add-ons:', error);
-            showError('Gagal memuat add-ons');
+            showError('Failed to load add-ons');
         } finally {
             setLoading(false);
         }
@@ -77,11 +77,11 @@ export default function AdminAddonsPage() {
         if (confirmed) {
             try {
                 await api.delete(`/menu/items/${item.menu_id}`);
-                showSuccess('Add-on berhasil dihapus');
+                showSuccess('Add-on successfully deleted');
                 loadAddons();
             } catch (error) {
                 console.error('Failed to delete:', error);
-                showError('Gagal menghapus add-on');
+                showError('Failed to delete add-on');
             }
         }
     };
@@ -97,13 +97,13 @@ export default function AdminAddonsPage() {
                     price: Number(form.price),
                     is_available: true
                 });
-                showSuccess('Add-on berhasil diupdate');
+                showSuccess('Add-on successfully updated');
             } else {
-                // Create new - nama dengan prefix untuk identifikasi as add-on
+                // Create new
                 const addonName = form.menu_name.toLowerCase().includes('tambah') ||
                     form.menu_name.toLowerCase().includes('extra')
                     ? form.menu_name
-                    : `Tambah ${form.menu_name}`;
+                    : `Extra ${form.menu_name}`;
 
                 await api.post('/menu/items', {
                     ...form,
@@ -112,13 +112,13 @@ export default function AdminAddonsPage() {
                     is_available: true,
                     images: form.image_url ? [form.image_url] : []
                 });
-                showSuccess('Add-on berhasil dibuat');
+                showSuccess('Add-on successfully created');
             }
             setIsModalOpen(false);
             loadAddons();
         } catch (error) {
             console.error('Failed to save:', error);
-            showError('Gagal menyimpan add-on');
+            showError('Failed to save add-on');
         } finally {
             setSaving(false);
         }
@@ -134,8 +134,8 @@ export default function AdminAddonsPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-800">Kelola Add-ons</h1>
-                    <p className="text-gray-500 text-sm">Tambahan menu untuk custom order</p>
+                    <h1 className="text-2xl font-bold text-gray-800">Manage Add-ons</h1>
+                    <p className="text-gray-500 text-sm">Additional menu items for custom orders</p>
                 </div>
                 <div className="flex gap-3">
                     <button
@@ -149,18 +149,18 @@ export default function AdminAddonsPage() {
                         onClick={openCreateModal}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
                     >
-                        <FiPlus size={16} /> Tambah Add-on
+                        <FiPlus size={16} /> Add Add-on
                     </button>
                 </div>
             </div>
 
             {/* Info Box */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                <h3 className="font-medium text-blue-800 mb-1">💡 Tips Add-on</h3>
+                <h3 className="font-medium text-blue-800 mb-1">💡 Add-on Tips</h3>
                 <p className="text-sm text-blue-700">
-                    Add-on adalah item tambahan yang bisa dipilih customer saat memesan.
-                    Sistem akan mendeteksi item dengan nama mengandung "Tambah" atau "Extra",
-                    atau item dengan harga ≤ Rp 10.000 sebagai add-on.
+                    Add-ons are extra items that customers can choose when ordering.
+                    The system detects items with names containing "Tambah" or "Extra",
+                    or items priced ≤ Rp 10,000 as add-ons.
                 </p>
             </div>
 
@@ -172,12 +172,12 @@ export default function AdminAddonsPage() {
             ) : addons.length === 0 ? (
                 <div className="text-center py-12 bg-white rounded-lg border">
                     <FiPackage size={48} className="mx-auto text-gray-400 mb-4" />
-                    <p className="text-gray-500">Belum ada add-on</p>
+                    <p className="text-gray-500">No add-ons yet</p>
                     <button
                         onClick={openCreateModal}
                         className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700"
                     >
-                        Buat Add-on Pertama
+                        Create First Add-on
                     </button>
                 </div>
             ) : (
@@ -186,9 +186,9 @@ export default function AdminAddonsPage() {
                         <thead className="bg-gray-50 border-b">
                             <tr>
                                 <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Add-on</th>
-                                <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Deskripsi</th>
-                                <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Harga</th>
-                                <th className="text-center px-4 py-3 text-sm font-medium text-gray-600">Aksi</th>
+                                <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Description</th>
+                                <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Price</th>
+                                <th className="text-center px-4 py-3 text-sm font-medium text-gray-600">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y">
@@ -224,7 +224,7 @@ export default function AdminAddonsPage() {
                                             <button
                                                 onClick={() => handleDelete(item)}
                                                 className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                                title="Hapus"
+                                                title="Delete"
                                             >
                                                 <FiTrash2 size={16} />
                                             </button>
@@ -243,7 +243,7 @@ export default function AdminAddonsPage() {
                     <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
                         <div className="flex justify-between items-center p-4 border-b">
                             <h3 className="text-lg font-semibold text-gray-800">
-                                {editItem ? 'Edit Add-on' : 'Tambah Add-on Baru'}
+                                {editItem ? 'Edit Add-on' : 'Add New Add-on'}
                             </h3>
                             <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">
                                 <FiX size={20} />
@@ -252,35 +252,35 @@ export default function AdminAddonsPage() {
 
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Nama Add-on</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Add-on Name</label>
                                 <input
                                     type="text"
                                     name="menu_name"
                                     value={form.menu_name}
                                     onChange={handleFormChange}
-                                    placeholder="Contoh: Extra Sambal, Nasi Tambah"
+                                    placeholder="e.g. Extra Sambal, Extra Rice"
                                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                                     required
                                 />
                                 <p className="text-xs text-gray-500 mt-1">
-                                    Sistem akan menambah "Tambah" di depan jika belum ada
+                                    The system will prepend "Extra" if not already present
                                 </p>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                                 <textarea
                                     name="description"
                                     value={form.description}
                                     onChange={handleFormChange}
-                                    placeholder="Deskripsi singkat (opsional)"
+                                    placeholder="Short description (optional)"
                                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                                     rows={2}
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Harga (Rp)</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Price (Rp)</label>
                                 <input
                                     type="number"
                                     name="price"
@@ -294,7 +294,7 @@ export default function AdminAddonsPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                                 <select
                                     name="category_id"
                                     value={form.category_id}
@@ -308,7 +308,7 @@ export default function AdminAddonsPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">URL Gambar (Opsional)</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Image URL (Optional)</label>
                                 <input
                                     type="url"
                                     name="image_url"
@@ -325,14 +325,14 @@ export default function AdminAddonsPage() {
                                     onClick={() => setIsModalOpen(false)}
                                     className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50"
                                 >
-                                    Batal
+                                    Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={saving}
                                     className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 disabled:opacity-50"
                                 >
-                                    {saving ? 'Menyimpan...' : editItem ? 'Update' : 'Simpan'}
+                                    {saving ? 'Saving...' : editItem ? 'Update' : 'Save'}
                                 </button>
                             </div>
                         </form>

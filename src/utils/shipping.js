@@ -10,10 +10,10 @@
  */
 
 export const SHIPPING_TIERS = [
-  { minQty: 100, maxQty: Infinity, fee: 0, label: 'Gratis Ongkir + Prioritas', color: 'text-green-600' },
-  { minQty: 50, maxQty: 99, fee: 0, label: 'Gratis Ongkir', color: 'text-green-600' },
-  { minQty: 10, maxQty: 49, fee: 5000, label: 'Ongkir Hemat', color: 'text-blue-600' },
-  { minQty: 1, maxQty: 9, fee: 10000, label: 'Ongkir Standar', color: 'text-gray-600' },
+  { minQty: 100, maxQty: Infinity, fee: 0, label: 'Free Shipping + Priority', color: 'text-green-600' },
+  { minQty: 50, maxQty: 99, fee: 0, label: 'Free Shipping', color: 'text-green-600' },
+  { minQty: 10, maxQty: 49, fee: 5000, label: 'Discounted Shipping', color: 'text-blue-600' },
+  { minQty: 1, maxQty: 9, fee: 10000, label: 'Standard Shipping', color: 'text-gray-600' },
 ];
 
 /**
@@ -33,7 +33,7 @@ export function calculateShipping(totalQuantity) {
     const nextTier = SHIPPING_TIERS[tierIndex - 1];
     const itemsNeeded = nextTier.minQty - totalQuantity;
     if (nextTier.fee < tier.fee) {
-      nextTierInfo = `Tambah ${itemsNeeded} item untuk ${nextTier.label}`;
+      nextTierInfo = `Add ${itemsNeeded} more items for ${nextTier.label}`;
     }
   }
   
@@ -51,7 +51,7 @@ export function calculateShipping(totalQuantity) {
  * @returns {string}
  */
 export function formatShippingFee(fee) {
-  if (fee === 0) return 'Gratis';
+  if (fee === 0) return 'Free';
   return `Rp ${fee.toLocaleString()}`;
 }
 

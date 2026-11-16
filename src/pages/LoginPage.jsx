@@ -71,10 +71,10 @@ function LoginPage() {
               </span>
             </div>
             <h1 className="text-white text-3xl md:text-5xl font-black leading-tight tracking-tight">
-              Masuk
+              Sign In
             </h1>
             <p className="text-white/80 text-sm md:text-lg font-medium leading-relaxed max-w-xl mx-auto">
-              Selamat datang kembali di Dapur Nekti
+              Welcome back to Dapur Nekti
             </p>
           </div>
         </div>
@@ -94,8 +94,8 @@ function LoginPage() {
                   <span className="material-symbols-outlined text-white text-[24px]">person</span>
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-gray-800">Masuk ke Akun</h2>
-                  <p className="text-sm text-gray-500">Gunakan email atau Google</p>
+                  <h2 className="text-lg font-bold text-gray-800">Sign In to Account</h2>
+                  <p className="text-sm text-gray-500">Use email or Google</p>
                 </div>
               </div>
             </div>
@@ -120,7 +120,7 @@ function LoginPage() {
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                 </svg>
-                Masuk dengan Google
+                Sign in with Google
               </button>
 
               {/* Separator */}
@@ -130,7 +130,7 @@ function LoginPage() {
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="px-3 bg-white text-gray-400 font-medium">
-                    atau dengan email
+                    or with email
                   </span>
                 </div>
               </div>
@@ -144,8 +144,8 @@ function LoginPage() {
                   </label>
                   <input
                     type="email"
-                    {...register('email', { required: 'Email wajib diisi' })}
-                    placeholder="nama@email.com"
+                    {...register('email', { required: 'Email is required' })}
+                    placeholder="name@email.com"
                     className={`w-full px-4 py-3 border rounded-xl text-gray-800 focus:ring-2 focus:ring-teal-100 transition-all ${errors.email ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-teal-500'}`}
                   />
                   {errors.email && <p className="mt-1.5 text-xs text-red-500">{errors.email.message}</p>}
@@ -158,7 +158,7 @@ function LoginPage() {
                   </label>
                   <input
                     type="password"
-                    {...register('password', { required: 'Password wajib diisi' })}
+                    {...register('password', { required: 'Password is required' })}
                     placeholder="••••••••"
                     className={`w-full px-4 py-3 border rounded-xl text-gray-800 focus:ring-2 focus:ring-teal-100 transition-all ${errors.password ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-teal-500'}`}
                   />
@@ -174,12 +174,12 @@ function LoginPage() {
                   {loading ? (
                     <>
                       <span className="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
-                      Memproses...
+                      Processing...
                     </>
                   ) : (
                     <>
                       <span className="material-symbols-outlined text-[18px]">login</span>
-                      Masuk
+                      Sign In
                     </>
                   )}
                 </button>
@@ -189,9 +189,9 @@ function LoginPage() {
             {/* Footer */}
             <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 text-center">
               <p className="text-sm text-gray-500">
-                Belum punya akun?{' '}
+                Don't have an account?{' '}
                 <Link to="/register" className="font-semibold transition-colors hover:opacity-80" style={{ color: '#03BEB0' }}>
-                  Daftar Sekarang
+                  Register Now
                 </Link>
               </p>
             </div>

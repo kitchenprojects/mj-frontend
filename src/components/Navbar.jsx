@@ -35,7 +35,7 @@ export default function Navbar() {
           <nav className="hidden md:flex items-center gap-8">
             <NavLink to="/" className={navLinkClass}>
               <span className="material-symbols-outlined text-[18px]">home</span>
-              Beranda
+              Home
             </NavLink>
             <NavLink to="/menu" className={navLinkClass}>
               <span className="material-symbols-outlined text-[18px]">restaurant_menu</span>
@@ -44,7 +44,7 @@ export default function Navbar() {
             {user && (
               <NavLink to="/orders" className={navLinkClass}>
                 <span className="material-symbols-outlined text-[18px]">receipt_long</span>
-                Pesanan
+                Orders
               </NavLink>
             )}
           </nav>
@@ -58,7 +58,7 @@ export default function Navbar() {
                 style={{ color: '#03BEB0' }}
               >
                 <span className="material-symbols-outlined text-[20px]">account_circle</span>
-                Profil
+                Profile
               </NavLink>
             ) : (
               <Link
@@ -67,7 +67,7 @@ export default function Navbar() {
                 style={{ backgroundColor: '#03BEB0' }}
               >
                 <span className="material-symbols-outlined text-[18px]">login</span>
-                Masuk
+                Sign In
               </Link>
             )}
           </div>
@@ -94,7 +94,7 @@ export default function Navbar() {
           <nav className="flex flex-col space-y-1 border-t border-gray-100 pt-4">
             <NavLink to="/" className={navLinkClass} onClick={closeMenu}>
               <span className="material-symbols-outlined text-[18px]">home</span>
-              Beranda
+              Home
             </NavLink>
             <NavLink to="/menu" className={navLinkClass} onClick={closeMenu}>
               <span className="material-symbols-outlined text-[18px]">restaurant_menu</span>
@@ -104,11 +104,11 @@ export default function Navbar() {
               <>
                 <NavLink to="/orders" className={navLinkClass} onClick={closeMenu}>
                   <span className="material-symbols-outlined text-[18px]">receipt_long</span>
-                  Pesanan Saya
+                  My Orders
                 </NavLink>
                 <NavLink to="/profile" className={navLinkClass} onClick={closeMenu}>
                   <span className="material-symbols-outlined text-[18px]">account_circle</span>
-                  Profil
+                  Profile
                 </NavLink>
               </>
             ) : (
@@ -119,7 +119,7 @@ export default function Navbar() {
                 onClick={closeMenu}
               >
                 <span className="material-symbols-outlined text-[18px]">login</span>
-                Masuk / Daftar
+                Sign In / Register
               </Link>
             )}
           </nav>

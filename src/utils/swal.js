@@ -47,7 +47,7 @@ export const showInfo = (message) => {
 };
 
 // Confirmation dialog
-export const confirmAction = async (title, text, confirmButtonText = 'Ya', cancelButtonText = 'Batal') => {
+export const confirmAction = async (title, text, confirmButtonText = 'Yes', cancelButtonText = 'Cancel') => {
   const result = await Swal.fire({
     title,
     text,
@@ -63,16 +63,16 @@ export const confirmAction = async (title, text, confirmButtonText = 'Ya', cance
 };
 
 // Delete confirmation (with danger color)
-export const confirmDelete = async (itemName = 'item ini') => {
+export const confirmDelete = async (itemName = 'this item') => {
   const result = await Swal.fire({
-    title: 'Hapus?',
-    text: `Yakin ingin menghapus ${itemName}? Tindakan ini tidak dapat dibatalkan.`,
+    title: 'Delete?',
+    text: `Are you sure you want to delete ${itemName}? This action cannot be undone.`,
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#ef4444',
     cancelButtonColor: '#6b7280',
-    confirmButtonText: 'Ya, Hapus',
-    cancelButtonText: 'Batal',
+    confirmButtonText: 'Yes, Delete',
+    cancelButtonText: 'Cancel',
     reverseButtons: true
   });
   return result.isConfirmed;
@@ -105,10 +105,10 @@ export const promptInput = async (title, inputPlaceholder = '') => {
     confirmButtonColor: '#10b981',
     cancelButtonColor: '#6b7280',
     confirmButtonText: 'OK',
-    cancelButtonText: 'Batal',
+    cancelButtonText: 'Cancel',
     inputValidator: (value) => {
       if (!value) {
-        return 'Field tidak boleh kosong!';
+        return 'Field cannot be empty!';
       }
     }
   });

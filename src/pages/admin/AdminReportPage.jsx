@@ -32,7 +32,7 @@ export default function AdminReportPage() {
             setReport(data);
         } catch (error) {
             console.error('Failed to load report:', error);
-            showError('Gagal memuat laporan');
+            showError('Failed to load report');
         } finally {
             setLoading(false);
         }
@@ -47,7 +47,7 @@ export default function AdminReportPage() {
     // Export to Excel - Comprehensive Accounting Report
     const exportToExcel = () => {
         if (!report || report.orders.length === 0) {
-            showError('Tidak ada data untuk diekspor');
+            showError('No data available to export');
             return;
         }
 
@@ -60,38 +60,38 @@ export default function AdminReportPage() {
         const coverData = [
             [''],
             ['DAPUR NEKTI'],
-            ['LAPORAN PENJUALAN'],
+            ['SALES REPORT'],
             [''],
-            ['Periode Laporan:', `${periodStart} - ${periodEnd}`],
-            ['Tanggal Cetak:', reportDate],
+            ['Report Period:', `${periodStart} - ${periodEnd}`],
+            ['Print Date:', reportDate],
             [''],
             ['═══════════════════════════════════════════════════════════════'],
             [''],
-            ['RINGKASAN EKSEKUTIF'],
+            ['EXECUTIVE SUMMARY'],
             [''],
-            ['Indikator', 'Nilai', 'Keterangan'],
-            ['Total Pendapatan', `Rp ${report.summary.totalRevenue.toLocaleString()}`, 'Pendapatan kotor dari seluruh transaksi'],
-            ['Total Transaksi', report.summary.totalOrders, 'Jumlah order yang masuk'],
-            ['Order Selesai', report.summary.completedOrders, 'Order dengan status Delivered'],
-            ['Order Pending', report.summary.pendingOrders, 'Order yang masih diproses'],
-            ['Jumlah Pelanggan', report.summary.uniqueCustomers, 'Pelanggan unik yang bertransaksi'],
+            ['Indicator', 'Value', 'Description'],
+            ['Total Revenue', `Rp ${report.summary.totalRevenue.toLocaleString()}`, 'Gross revenue from all transactions'],
+            ['Total Transactions', report.summary.totalOrders, 'Total incoming orders'],
+            ['Completed Orders', report.summary.completedOrders, 'Orders with status Delivered'],
+            ['Pending Orders', report.summary.pendingOrders, 'Orders currently in progress'],
+            ['Total Customers', report.summary.uniqueCustomers, 'Unique customers who made transactions'],
             [''],
-            ['ANALISIS PERFORMA'],
+            ['PERFORMANCE ANALYSIS'],
             [''],
-            ['Rata-rata Nilai Order', report.summary.totalOrders > 0 ? `Rp ${Math.round(report.summary.totalRevenue / report.summary.totalOrders).toLocaleString()}` : 'Rp 0', 'Total Revenue / Total Order'],
-            ['Tingkat Completion', report.summary.totalOrders > 0 ? `${Math.round((report.summary.completedOrders / report.summary.totalOrders) * 100)}%` : '0%', 'Order Selesai / Total Order'],
+            ['Average Order Value', report.summary.totalOrders > 0 ? `Rp ${Math.round(report.summary.totalRevenue / report.summary.totalOrders).toLocaleString()}` : 'Rp 0', 'Total Revenue / Total Orders'],
+            ['Completion Rate', report.summary.totalOrders > 0 ? `${Math.round((report.summary.completedOrders / report.summary.totalOrders) * 100)}%` : '0%', 'Completed Orders / Total Orders'],
             [''],
         ];
         const coverWs = XLSX.utils.aoa_to_sheet(coverData);
         coverWs['!cols'] = [{ wch: 25 }, { wch: 30 }, { wch: 40 }];
-        XLSX.utils.book_append_sheet(wb, coverWs, 'Ringkasan Eksekutif');
+        XLSX.utils.book_append_sheet(wb, coverWs, 'Executive Summary');
 
         // ========== SHEET 2: DETAILED ORDERS ==========
         const ordersHeader = [
-            ['DAFTAR TRANSAKSI DETAIL'],
-            [`Periode: ${periodStart} - ${periodEnd}`],
+            ['DETAILED TRANSACTIONS LIST'],
+            [`Period: ${periodStart} - ${periodEnd}`],
             [''],
-            ['No', 'Order ID', 'Tanggal Order', 'Waktu', 'Nama Pelanggan', 'No. Telepon', 'Status Order', 'Status Bayar', 'Tanggal Bayar', 'Total (Rp)']
+            ['No', 'Order ID', 'Order Date', 'Time', 'Customer Name', 'Phone Number', 'Order Status', 'Payment Status', 'Payment Date', 'Total (Rp)']
         ];
         const ordersRows = report.orders.map((o, idx) => [
             idx + 1,
@@ -118,14 +118,14 @@ export default function AdminReportPage() {
             { wch: 5 }, { wch: 38 }, { wch: 12 }, { wch: 8 }, { wch: 20 }, { wch: 15 },
             { wch: 15 }, { wch: 12 }, { wch: 18 }, { wch: 15 }
         ];
-        XLSX.utils.book_append_sheet(wb, ordersWs, 'Detail Transaksi');
+        XLSX.utils.book_append_sheet(wb, ordersWs, 'Transaction Details');
 
         // ========== SHEET 3: DAILY SALES BREAKDOWN ==========
         const dailyHeader = [
-            ['REKAPITULASI PENJUALAN HARIAN'],
-            [`Periode: ${periodStart} - ${periodEnd}`],
+            ['DAILY SALES SUMMARY'],
+            [`Period: ${periodStart} - ${periodEnd}`],
             [''],
-            ['No', 'Tanggal', 'Jumlah Order', 'Total Pendapatan (Rp)', 'Rata-rata per Order (Rp)']
+            ['No', 'Date', 'Total Orders', 'Total Revenue (Rp)', 'Average per Order (Rp)']
         ];
         const dailyRows = report.dailySales.map((d, idx) => [
             idx + 1,
@@ -145,14 +145,14 @@ export default function AdminReportPage() {
 
         const dailyWs = XLSX.utils.aoa_to_sheet([...dailyHeader, ...dailyRows, ...dailySummary]);
         dailyWs['!cols'] = [{ wch: 5 }, { wch: 25 }, { wch: 15 }, { wch: 22 }, { wch: 22 }];
-        XLSX.utils.book_append_sheet(wb, dailyWs, 'Penjualan Harian');
+        XLSX.utils.book_append_sheet(wb, dailyWs, 'Daily Sales');
 
         // ========== SHEET 4: MENU PERFORMANCE ==========
         const menuHeader = [
-            ['ANALISIS PERFORMA MENU'],
-            [`Periode: ${periodStart} - ${periodEnd}`],
+            ['MENU PERFORMANCE ANALYSIS'],
+            [`Period: ${periodStart} - ${periodEnd}`],
             [''],
-            ['Rank', 'Nama Menu', 'Qty Terjual', 'Total Revenue (Rp)', 'Kontribusi Revenue (%)']
+            ['Rank', 'Menu Name', 'Qty Sold', 'Total Revenue (Rp)', 'Revenue Contribution (%)']
         ];
         const totalMenuRevenue = report.topItems.reduce((sum, item) => sum + Number(item.total_revenue), 0);
         const menuRows = report.topItems.map((item, idx) => [
@@ -171,7 +171,7 @@ export default function AdminReportPage() {
 
         const menuWs = XLSX.utils.aoa_to_sheet([...menuHeader, ...menuRows, ...menuSummary]);
         menuWs['!cols'] = [{ wch: 6 }, { wch: 30 }, { wch: 12 }, { wch: 20 }, { wch: 20 }];
-        XLSX.utils.book_append_sheet(wb, menuWs, 'Performa Menu');
+        XLSX.utils.book_append_sheet(wb, menuWs, 'Menu Performance');
 
         // ========== SHEET 5: STATUS BREAKDOWN ==========
         const statusCounts = {};
@@ -183,19 +183,19 @@ export default function AdminReportPage() {
         });
 
         const statusData = [
-            ['BREAKDOWN STATUS ORDER & PEMBAYARAN'],
-            [`Periode: ${periodStart} - ${periodEnd}`],
+            ['ORDER & PAYMENT STATUS BREAKDOWN'],
+            [`Period: ${periodStart} - ${periodEnd}`],
             [''],
-            ['STATUS ORDER'],
-            ['Status', 'Jumlah', 'Persentase'],
+            ['ORDER STATUS'],
+            ['Status', 'Count', 'Percentage'],
             ...Object.entries(statusCounts).map(([status, count]) => [
                 status,
                 count,
                 `${((count / report.orders.length) * 100).toFixed(1)}%`
             ]),
             [''],
-            ['STATUS PEMBAYARAN'],
-            ['Status', 'Jumlah', 'Persentase'],
+            ['PAYMENT STATUS'],
+            ['Status', 'Count', 'Percentage'],
             ...Object.entries(paymentCounts).map(([status, count]) => [
                 status,
                 count,
@@ -204,14 +204,14 @@ export default function AdminReportPage() {
         ];
         const statusWs = XLSX.utils.aoa_to_sheet(statusData);
         statusWs['!cols'] = [{ wch: 20 }, { wch: 12 }, { wch: 12 }];
-        XLSX.utils.book_append_sheet(wb, statusWs, 'Breakdown Status');
+        XLSX.utils.book_append_sheet(wb, statusWs, 'Status Breakdown');
 
         // Generate filename
-        const fileName = `Laporan_Penjualan_MJKitchen_${startDate}_to_${endDate}.xlsx`;
+        const fileName = `Sales_Report_MJKitchen_${startDate}_to_${endDate}.xlsx`;
 
         // Download
         XLSX.writeFile(wb, fileName);
-        showSuccess('Laporan komprehensif berhasil diexport!');
+        showSuccess('Comprehensive report successfully exported!');
     };
 
     // Quick date presets
@@ -265,8 +265,8 @@ export default function AdminReportPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-800">Laporan Penjualan</h1>
-                    <p className="text-gray-500 text-sm">Export laporan ke Excel untuk analisis lebih lanjut</p>
+                    <h1 className="text-2xl font-bold text-gray-800">Sales Report</h1>
+                    <p className="text-gray-500 text-sm">Export reports to Excel for further analysis</p>
                 </div>
                 <button
                     onClick={exportToExcel}
@@ -282,10 +282,10 @@ export default function AdminReportPage() {
                 <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
                     {/* Quick Presets */}
                     <div className="flex gap-2 flex-wrap">
-                        <button onClick={() => setPreset('today')} className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">Hari Ini</button>
-                        <button onClick={() => setPreset('week')} className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">7 Hari</button>
-                        <button onClick={() => setPreset('month')} className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">Bulan Ini</button>
-                        <button onClick={() => setPreset('year')} className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">Tahun Ini</button>
+                        <button onClick={() => setPreset('today')} className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">Today</button>
+                        <button onClick={() => setPreset('week')} className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">7 Days</button>
+                        <button onClick={() => setPreset('month')} className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">This Month</button>
+                        <button onClick={() => setPreset('year')} className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">This Year</button>
                     </div>
 
                     <div className="h-6 w-px bg-gray-300 hidden lg:block"></div>
@@ -301,7 +301,7 @@ export default function AdminReportPage() {
                                 className="border border-gray-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                             />
                         </div>
-                        <span className="text-gray-400">sampai</span>
+                        <span className="text-gray-400">to</span>
                         <input
                             type="date"
                             value={endDate}
@@ -323,7 +323,7 @@ export default function AdminReportPage() {
             {loading && (
                 <div className="text-center py-12 text-gray-500">
                     <div className="animate-spin w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-                    Loading laporan...
+                    Loading report...
                 </div>
             )}
 
@@ -375,7 +375,7 @@ export default function AdminReportPage() {
                         {/* Top Selling Items */}
                         <div className="bg-white border rounded-xl overflow-hidden">
                             <div className="p-4 border-b bg-gray-50">
-                                <h3 className="font-semibold text-gray-800">Menu Terlaris</h3>
+                                <h3 className="font-semibold text-gray-800">Top Selling Menu</h3>
                             </div>
                             <div className="divide-y max-h-80 overflow-y-auto">
                                 {report.topItems.length > 0 ? (
@@ -387,7 +387,7 @@ export default function AdminReportPage() {
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-medium text-gray-800 truncate">{item.menu_name}</p>
                                                 <p className="text-xs text-gray-500">
-                                                    {Number(item.total_sold)} terjual
+                                                    {Number(item.total_sold)} sold
                                                 </p>
                                             </div>
                                             <p className="text-sm font-medium text-emerald-600">
@@ -396,7 +396,7 @@ export default function AdminReportPage() {
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="p-8 text-center text-gray-500">Belum ada data</div>
+                                    <div className="p-8 text-center text-gray-500">No data available</div>
                                 )}
                             </div>
                         </div>
@@ -404,7 +404,7 @@ export default function AdminReportPage() {
                         {/* Orders Table */}
                         <div className="lg:col-span-2 bg-white border rounded-xl overflow-hidden">
                             <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
-                                <h3 className="font-semibold text-gray-800">Daftar Order</h3>
+                                <h3 className="font-semibold text-gray-800">Order List</h3>
                                 <span className="text-sm text-gray-500">{report.orders.length} orders</span>
                             </div>
                             <div className="overflow-x-auto max-h-80 overflow-y-auto">
@@ -412,9 +412,9 @@ export default function AdminReportPage() {
                                     <thead className="bg-gray-50 sticky top-0">
                                         <tr>
                                             <th className="text-left px-4 py-2 font-medium text-gray-600">Order ID</th>
-                                            <th className="text-left px-4 py-2 font-medium text-gray-600">Pelanggan</th>
+                                            <th className="text-left px-4 py-2 font-medium text-gray-600">Customer</th>
                                             <th className="text-left px-4 py-2 font-medium text-gray-600">Status</th>
-                                            <th className="text-left px-4 py-2 font-medium text-gray-600">Bayar</th>
+                                            <th className="text-left px-4 py-2 font-medium text-gray-600">Payment</th>
                                             <th className="text-right px-4 py-2 font-medium text-gray-600">Total</th>
                                         </tr>
                                     </thead>
@@ -442,7 +442,7 @@ export default function AdminReportPage() {
                                         ) : (
                                             <tr>
                                                 <td colSpan="5" className="px-4 py-8 text-center text-gray-500">
-                                                    Tidak ada order dalam rentang tanggal ini
+                                                    No orders within this date range
                                                 </td>
                                             </tr>
                                         )}

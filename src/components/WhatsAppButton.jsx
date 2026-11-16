@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 export default function WhatsAppButton({ phoneNumber = '6288970788847' }) {
   const [isHovered, setIsHovered] = useState(false);
 
-  const message = encodeURIComponent('Halo Dapur Nekti! Saya ingin bertanya tentang menu...');
+  const message = encodeURIComponent('Hello Dapur Nekti! I would like to ask about the menu...');
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
   return (
@@ -27,7 +27,7 @@ export default function WhatsAppButton({ phoneNumber = '6288970788847' }) {
           ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'}
         `}
       >
-        Tanya 24 Jam
+        Chat 24/7
       </div>
 
       {/* Button */}
@@ -50,7 +50,7 @@ export default function WhatsAppButton({ phoneNumber = '6288970788847' }) {
  * Helper function to generate WhatsApp order message
  */
 export function generateWhatsAppOrderMessage(items, total) {
-  let message = '🍱 *PESANAN MJ KITCHEN*\n\n';
+  let message = '🍱 *MJ KITCHEN ORDER*\n\n';
 
   items.forEach((item, index) => {
     const itemPrice = Number(item.price) + (item.addonsTotal || 0);
@@ -68,7 +68,7 @@ export function generateWhatsAppOrderMessage(items, total) {
 
   message += `━━━━━━━━━━━━━━━\n`;
   message += `*TOTAL: Rp ${total.toLocaleString()}*\n\n`;
-  message += `Mohon konfirmasi pesanan ini. Terima kasih! 🙏`;
+  message += `Please confirm this order. Thank you! 🙏`;
 
   return message;
 }

@@ -9,7 +9,7 @@ export default function HomePage() {
     orders: '1K++',
     customers: '500++',
     menus: '50+',
-    years: '5th+'
+    years: '5+ yrs'
   });
 
   useEffect(() => {
@@ -30,11 +30,11 @@ export default function HomePage() {
         <div className="relative max-w-4xl mx-auto text-center px-4">
           {/* Main Headline */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight">
-            <span style={{ color: '#065D5F' }}>Pesan Dadakan?</span><br />
-            <span style={{ color: '#03BEB0' }}>Tanpa Deg-degan!</span>
+            <span style={{ color: '#065D5F' }}>Last-Minute Order?</span><br />
+            <span style={{ color: '#03BEB0' }}>Worry-Free!</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Siap kirim ribuan porsi dadakan. Tersedia 24 jam kapan pun kamu butuhkan!
+            Ready to deliver thousands of portions on short notice. Available 24/7 whenever you need!
           </p>
 
           {/* Search Bar */}
@@ -45,7 +45,7 @@ export default function HomePage() {
                   <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                   <input
                     type="text"
-                    placeholder="Cari menu yang kamu inginkan..."
+                    placeholder="Search for your favorite menu..."
                     className="w-full pl-12 pr-4 py-3 rounded-xl bg-gray-50 focus:bg-white focus:outline-none transition-all"
                     style={{ '--tw-ring-color': '#03BEB0' }}
                   />
@@ -55,7 +55,7 @@ export default function HomePage() {
                   className="px-6 py-3 text-white font-semibold rounded-xl hover:opacity-90 transition-colors whitespace-nowrap"
                   style={{ backgroundColor: '#03BEB0' }}
                 >
-                  Cari Menu
+                  Search Menu
                 </Link>
               </div>
             </div>
@@ -68,14 +68,14 @@ export default function HomePage() {
               className="inline-flex items-center justify-center gap-2 px-8 py-4 text-white font-bold rounded-2xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               style={{ backgroundColor: '#03BEB0' }}
             >
-              Lihat Semua Menu <FiArrowRight />
+              View Full Menu <FiArrowRight />
             </Link>
             <Link
               to="/register"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white font-bold rounded-2xl border-2 hover:bg-gray-50 transition-all"
               style={{ borderColor: '#03BEB0', color: '#03BEB0' }}
             >
-              Daftar Sekarang
+              Register Now
             </Link>
           </div>
         </div>
@@ -85,20 +85,20 @@ export default function HomePage() {
       <section className="py-8" style={{ backgroundColor: '#EBF2F2' }}>
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-center text-sm font-semibold text-gray-500 mb-6 uppercase tracking-wider">
-            Kualitas dan Kebersihan adalah Standar Utama Kami
+            Quality and Hygiene are Our Foremost Standards
           </h2>
           <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12">
             <div className="flex items-center gap-2" style={{ color: '#065D5F' }}>
               <FiShield size={24} />
-              <span className="font-semibold">Mutu Terjamin</span>
+              <span className="font-semibold">Guaranteed Quality</span>
             </div>
             <div className="flex items-center gap-2" style={{ color: '#065D5F' }}>
               <FiAward size={24} />
-              <span className="font-semibold">Laik Hygiene</span>
+              <span className="font-semibold">Hygiene Certified</span>
             </div>
             <div className="flex items-center gap-2" style={{ color: '#065D5F' }}>
               <FiShield size={24} />
-              <span className="font-semibold">Halal</span>
+              <span className="font-semibold">Halal Certified</span>
             </div>
           </div>
         </div>
@@ -108,24 +108,24 @@ export default function HomePage() {
       <section className="py-12 text-white" style={{ background: 'linear-gradient(135deg, #03BEB0 0%, #02A99C 100%)' }}>
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-center text-2xl md:text-3xl font-bold mb-8">
-            Komitmen Dapur Nekti Untukmu
+            Dapur Nekti's Commitment to You
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
               <div className="text-3xl md:text-4xl font-extrabold mb-1">{stats.orders}</div>
-              <div className="text-white/80 text-sm">Pesanan Terkirim</div>
+              <div className="text-white/80 text-sm">Orders Delivered</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-extrabold mb-1">{stats.customers}</div>
-              <div className="text-white/80 text-sm">Pelanggan Setia</div>
+              <div className="text-white/80 text-sm">Loyal Customers</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-extrabold mb-1">{stats.menus}</div>
-              <div className="text-white/80 text-sm">Pilihan Menu</div>
+              <div className="text-white/80 text-sm">Menu Choices</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-extrabold mb-1">{stats.years}</div>
-              <div className="text-white/80 text-sm">Tahun Melayani</div>
+              <div className="text-white/80 text-sm">Years of Service</div>
             </div>
           </div>
         </div>
@@ -135,9 +135,9 @@ export default function HomePage() {
       <section className="py-12 md:py-16">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-2xl md:text-4xl font-bold mb-2 text-center" style={{ color: '#065D5F' }}>
-            Kategori Terpopuler
+            Popular Categories
           </h2>
-          <p className="text-gray-500 text-center mb-8">Pilih kategori menu favoritmu</p>
+          <p className="text-gray-500 text-center mb-8">Choose your favorite menu category</p>
 
           <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide justify-center">
             {categories.map((cat) => (
@@ -160,7 +160,7 @@ export default function HomePage() {
                 <h3 className="font-semibold group-hover:text-teal-500 transition-colors" style={{ color: '#065D5F' }}>
                   {cat.category_name}
                 </h3>
-                <p className="text-sm text-gray-400 mt-1">{cat.description || 'Lihat menu'}</p>
+                <p className="text-sm text-gray-400 mt-1">{cat.description || 'View menu'}</p>
               </Link>
             ))}
           </div>
@@ -171,7 +171,7 @@ export default function HomePage() {
               className="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl hover:opacity-90 transition-colors"
               style={{ backgroundColor: '#03BEB0' }}
             >
-              Lihat Semua Menu <FiArrowRight />
+              View Full Menu <FiArrowRight />
             </Link>
           </div>
         </div>
@@ -181,29 +181,29 @@ export default function HomePage() {
       <section className="py-12" style={{ backgroundColor: '#F0F7F7' }}>
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center" style={{ color: '#065D5F' }}>
-            Kenapa Pilih Dapur Nekti?
+            Why Choose Dapur Nekti?
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-2xl text-center shadow-sm">
               <div className="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#E6F7F6' }}>
                 <FiClock style={{ color: '#03BEB0' }} size={28} />
               </div>
-              <h3 className="font-bold mb-2" style={{ color: '#065D5F' }}>Siap 24 Jam</h3>
-              <p className="text-gray-500 text-sm">Pesanan dadakan? Kami siap kapan saja!</p>
+              <h3 className="font-bold mb-2" style={{ color: '#065D5F' }}>24/7 Ready</h3>
+              <p className="text-gray-500 text-sm">Last-minute orders? We are ready anytime!</p>
             </div>
             <div className="bg-white p-6 rounded-2xl text-center shadow-sm">
               <div className="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#E6F7F6' }}>
                 <FiTruck style={{ color: '#03BEB0' }} size={28} />
               </div>
-              <h3 className="font-bold mb-2" style={{ color: '#065D5F' }}>Cepat Antar</h3>
-              <p className="text-gray-500 text-sm">Pengiriman cepat, makanan sampai hangat</p>
+              <h3 className="font-bold mb-2" style={{ color: '#065D5F' }}>Fast Delivery</h3>
+              <p className="text-gray-500 text-sm">Prompt delivery, food arrives piping hot</p>
             </div>
             <div className="bg-white p-6 rounded-2xl text-center shadow-sm">
               <div className="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#E6F7F6' }}>
                 <FiShield style={{ color: '#03BEB0' }} size={28} />
               </div>
-              <h3 className="font-bold mb-2" style={{ color: '#065D5F' }}>Kualitas Terjamin</h3>
-              <p className="text-gray-500 text-sm">Bahan fresh & standar hygiene tinggi</p>
+              <h3 className="font-bold mb-2" style={{ color: '#065D5F' }}>Guaranteed Quality</h3>
+              <p className="text-gray-500 text-sm">Fresh ingredients & rigorous hygiene standards</p>
             </div>
           </div>
         </div>
@@ -214,17 +214,17 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="rounded-3xl p-8 md:p-12 text-center text-white" style={{ background: 'linear-gradient(135deg, #065D5F 0%, #054D4F 100%)' }}>
             <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
-              Butuh Pesanan Cepat dan Terpercaya?
+              Need a Fast and Reliable Order?
             </h2>
             <p className="text-white/80 mb-6 max-w-xl mx-auto">
-              Tenang! Dapur Nekti siap layani pesanan dadakan dalam jumlah besar.
+              Relax! Dapur Nekti is ready to handle large on-demand orders.
             </p>
             <Link
               to="/menu"
               className="inline-flex items-center gap-2 px-8 py-4 bg-white font-bold rounded-2xl hover:bg-gray-100 transition-all"
               style={{ color: '#065D5F' }}
             >
-              Pesan Sekarang <FiArrowRight />
+              Order Now <FiArrowRight />
             </Link>
           </div>
         </div>

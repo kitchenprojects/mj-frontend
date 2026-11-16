@@ -23,7 +23,7 @@ export default function AdminOrdersPage() {
       setOrders(data);
     } catch (error) {
       console.error('Failed to load orders:', error);
-      showError('Gagal memuat orders');
+      showError('Failed to load orders');
     } finally {
       setLoading(false);
     }
@@ -59,7 +59,7 @@ export default function AdminOrdersPage() {
       setOrderDetail(data);
     } catch (error) {
       console.error('Failed to load order detail:', error);
-      showError('Gagal memuat detail order');
+      showError('Failed to load order details');
       setOrderDetail(null);
     } finally {
       setDetailLoading(false);
@@ -74,21 +74,21 @@ export default function AdminOrdersPage() {
   const updateStatus = async (order_id, status) => {
     const confirmed = await confirmAction(
       'Update Status?',
-      `Ubah status order menjadi "${status}"?`,
-      'Ya, Update',
-      'Batal'
+      `Change order status to "${status}"?`,
+      'Yes, Update',
+      'Cancel'
     );
     if (confirmed) {
       try {
         await api.put(`/orders/${order_id}/status`, { status });
-        showSuccess(`Status berhasil diubah menjadi ${status}`);
+        showSuccess(`Status successfully updated to ${status}`);
         load();
         if (orderDetail && orderDetail.order_id === order_id) {
           setOrderDetail({ ...orderDetail, status });
         }
       } catch (error) {
         console.error('Failed to update status:', error);
-        showError('Gagal mengubah status');
+        showError('Failed to update status');
       }
     }
   };
@@ -126,9 +126,9 @@ export default function AdminOrdersPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Order Masuk</h1>
+          <h1 className="text-2xl font-bold text-gray-800">Incoming Orders</h1>
           <p className="text-gray-500 text-sm">
-            {filteredOrders.length} dari {orders.length} orders
+            {filteredOrders.length} of {orders.length} orders
           </p>
         </div>
         <button
@@ -148,7 +148,7 @@ export default function AdminOrdersPage() {
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             <input
               type="text"
-              placeholder="Cari order ID atau nama..."
+              placeholder="Search order ID or name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
@@ -171,7 +171,7 @@ export default function AdminOrdersPage() {
               onChange={(e) => setStatusFilter(e.target.value)}
               className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
             >
-              <option value="all">Semua Status</option>
+              <option value="all">All Statuses</option>
               <option value="pending">Pending</option>
               <option value="confirmed">Confirmed</option>
               <option value="out for delivery">Out for Delivery</option>
@@ -185,7 +185,7 @@ export default function AdminOrdersPage() {
             onChange={(e) => setPaymentFilter(e.target.value)}
             className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
           >
-            <option value="all">Semua Pembayaran</option>
+            <option value="all">All Payments</option>
             <option value="paid">Paid</option>
             <option value="pending">Pending</option>
             <option value="unpaid">Unpaid</option>
@@ -197,7 +197,7 @@ export default function AdminOrdersPage() {
               onClick={clearFilters}
               className="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              Reset Filter
+              Reset Filters
             </button>
           )}
         </div>
@@ -214,14 +214,14 @@ export default function AdminOrdersPage() {
         <div className="text-center py-12 bg-white rounded-lg border">
           <FiPackage size={48} className="mx-auto text-gray-400 mb-4" />
           <p className="text-gray-500">
-            {hasActiveFilters ? 'Tidak ada order yang sesuai filter' : 'Tidak ada order masuk'}
+            {hasActiveFilters ? 'No orders match the filter' : 'No incoming orders'}
           </p>
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
               className="mt-4 text-emerald-600 hover:text-emerald-700"
             >
-              Reset Filter
+              Reset Filters
             </button>
           )}
         </div>
@@ -267,12 +267,12 @@ export default function AdminOrdersPage() {
               <thead className="bg-gray-50 border-b">
                 <tr>
                   <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Order ID</th>
-                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Pelanggan</th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Customer</th>
                   <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Total</th>
                   <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Status</th>
-                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Pembayaran</th>
-                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Tanggal</th>
-                  <th className="text-center px-4 py-3 text-sm font-medium text-gray-600">Aksi</th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Payment</th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-600">Date</th>
+                  <th className="text-center px-4 py-3 text-sm font-medium text-gray-600">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
@@ -323,7 +323,7 @@ export default function AdminOrdersPage() {
             {/* Header */}
             <div className="flex justify-between items-center p-4 border-b bg-gray-50">
               <h2 className="text-lg font-semibold text-gray-800">
-                Detail Order #{selectedOrder.substring(0, 8)}
+                Order Details #{selectedOrder.substring(0, 8)}
               </h2>
               <button onClick={closeDetail} className="text-gray-400 hover:text-gray-600">
                 <FiX size={24} />
@@ -342,7 +342,7 @@ export default function AdminOrdersPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <div className="flex items-center gap-2 text-gray-500 mb-2">
-                        <FiUser size={16} /> <span className="text-sm font-medium">Pelanggan</span>
+                        <FiUser size={16} /> <span className="text-sm font-medium">Customer</span>
                       </div>
                       <p className="font-medium text-gray-800">{orderDetail.user_name || 'Customer'}</p>
                       {orderDetail.user_phone && (
@@ -351,7 +351,7 @@ export default function AdminOrdersPage() {
                     </div>
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <div className="flex items-center gap-2 text-gray-500 mb-2">
-                        <FiClock size={16} /> <span className="text-sm font-medium">Waktu Order</span>
+                        <FiClock size={16} /> <span className="text-sm font-medium">Order Time</span>
                       </div>
                       <p className="font-medium text-gray-800">
                         {format(new Date(orderDetail.order_date), 'dd MMMM yyyy')}
@@ -366,7 +366,7 @@ export default function AdminOrdersPage() {
                   {orderDetail.street && (
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <div className="flex items-center gap-2 text-gray-500 mb-2">
-                        <FiMapPin size={16} /> <span className="text-sm font-medium">Alamat Pengiriman</span>
+                        <FiMapPin size={16} /> <span className="text-sm font-medium">Delivery Address</span>
                       </div>
                       <p className="text-gray-800">
                         {orderDetail.street}
@@ -379,7 +379,7 @@ export default function AdminOrdersPage() {
                   {/* Order Items */}
                   <div>
                     <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                      <FiPackage size={16} /> Detail Pesanan
+                      <FiPackage size={16} /> Order Details
                     </h3>
                     <div className="bg-gray-50 rounded-lg overflow-hidden">
                       <table className="w-full text-sm">
@@ -387,7 +387,7 @@ export default function AdminOrdersPage() {
                           <tr className="border-b bg-gray-100">
                             <th className="text-left px-4 py-2 font-medium text-gray-600">Item</th>
                             <th className="text-center px-4 py-2 font-medium text-gray-600">Qty</th>
-                            <th className="text-right px-4 py-2 font-medium text-gray-600">Harga</th>
+                            <th className="text-right px-4 py-2 font-medium text-gray-600">Price</th>
                             <th className="text-right px-4 py-2 font-medium text-gray-600">Subtotal</th>
                           </tr>
                         </thead>
@@ -422,23 +422,23 @@ export default function AdminOrdersPage() {
                   {/* Payment Status */}
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="flex items-center gap-2 text-gray-500 mb-2">
-                      <FiCreditCard size={16} /> <span className="text-sm font-medium">Status Pembayaran</span>
+                      <FiCreditCard size={16} /> <span className="text-sm font-medium">Payment Status</span>
                     </div>
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${getPaymentColor(orderDetail.payment_status)}`}>
                       {orderDetail.payment_status || 'Unpaid'}
                     </span>
                     {orderDetail.payment_date && (
                       <p className="text-sm text-gray-500 mt-1">
-                        Dibayar: {format(new Date(orderDetail.payment_date), 'dd MMM yyyy HH:mm')}
+                        Paid: {format(new Date(orderDetail.payment_date), 'dd MMM yyyy HH:mm')}
                       </p>
                     )}
                   </div>
 
                   {/* Order Status & Actions */}
                   <div>
-                    <h3 className="font-semibold text-gray-800 mb-3">Update Status Order</h3>
+                    <h3 className="font-semibold text-gray-800 mb-3">Update Order Status</h3>
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-sm text-gray-500">Status saat ini:</span>
+                      <span className="text-sm text-gray-500">Current status:</span>
                       <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(orderDetail.status)}`}>
                         {orderDetail.status}
                       </span>
@@ -468,7 +468,7 @@ export default function AdminOrdersPage() {
 
               {!detailLoading && !orderDetail && (
                 <div className="text-center py-8 text-red-500">
-                  Gagal memuat detail order.
+                  Failed to load order details.
                 </div>
               )}
             </div>
@@ -479,7 +479,7 @@ export default function AdminOrdersPage() {
                 onClick={closeDetail}
                 className="w-full py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
               >
-                Tutup
+                Close
               </button>
             </div>
           </div>

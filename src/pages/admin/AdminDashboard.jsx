@@ -26,7 +26,7 @@ export default function AdminDashboard() {
       setStats(data);
     } catch (err) {
       console.error('Failed to load dashboard stats:', err);
-      setError('Gagal memuat statistik');
+      setError('Failed to load statistics');
       // Fallback: load from orders directly
       try {
         const { data: orders } = await api.get('/orders');
@@ -76,7 +76,7 @@ export default function AdminDashboard() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-          <p className="text-gray-500 text-sm">Selamat datang di panel admin Dapur Nekti</p>
+          <p className="text-gray-500 text-sm">Welcome to Dapur Nekti admin panel</p>
         </div>
         <button
           onClick={loadStats}
@@ -88,7 +88,7 @@ export default function AdminDashboard() {
 
       {error && (
         <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-700 text-sm">
-          {error} - Menampilkan data fallback
+          {error} - Displaying fallback data
         </div>
       )}
 
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
             </div>
             <span className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded">Pending</span>
           </div>
-          <p className="text-orange-100 text-sm mb-1">Perlu Diproses</p>
+          <p className="text-orange-100 text-sm mb-1">Needs Processing</p>
           <p className="text-2xl font-bold">{stats?.totals?.pendingOrders || 0}</p>
         </div>
       </div>
@@ -150,7 +150,7 @@ export default function AdminDashboard() {
             <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
               <FiTrendingUp size={20} />
             </div>
-            <h3 className="font-semibold text-gray-800">Hari Ini</h3>
+            <h3 className="font-semibold text-gray-800">Today</h3>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -170,7 +170,7 @@ export default function AdminDashboard() {
             <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
               <FiTrendingUp size={20} />
             </div>
-            <h3 className="font-semibold text-gray-800">Bulan Ini</h3>
+            <h3 className="font-semibold text-gray-800">This Month</h3>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -190,12 +190,12 @@ export default function AdminDashboard() {
         {/* Recent Orders */}
         <div className="bg-white border rounded-xl overflow-hidden">
           <div className="flex items-center justify-between p-4 border-b">
-            <h3 className="font-semibold text-gray-800">Order Terbaru</h3>
+            <h3 className="font-semibold text-gray-800">Recent Orders</h3>
             <Link
               to="/admin/orders"
               className="text-sm text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
             >
-              Lihat Semua <FiArrowRight size={14} />
+              View All <FiArrowRight size={14} />
             </Link>
           </div>
           <div className="divide-y">
@@ -224,7 +224,7 @@ export default function AdminDashboard() {
             ) : (
               <div className="p-8 text-center text-gray-500">
                 <FiPackage size={32} className="mx-auto mb-2 text-gray-400" />
-                Belum ada order
+                No orders yet
               </div>
             )}
           </div>
@@ -233,12 +233,12 @@ export default function AdminDashboard() {
         {/* Popular Menu Items */}
         <div className="bg-white border rounded-xl overflow-hidden">
           <div className="flex items-center justify-between p-4 border-b">
-            <h3 className="font-semibold text-gray-800">Menu Terlaris</h3>
+            <h3 className="font-semibold text-gray-800">Popular Menu Items</h3>
             <Link
               to="/admin/menu"
               className="text-sm text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
             >
-              Kelola Menu <FiArrowRight size={14} />
+              Manage Menu <FiArrowRight size={14} />
             </Link>
           </div>
           <div className="divide-y">
@@ -251,7 +251,7 @@ export default function AdminDashboard() {
                   <div className="flex-1">
                     <p className="font-medium text-gray-800">{item.menu_name}</p>
                     <p className="text-xs text-gray-500">
-                      Terjual: {Number(item.total_sold).toLocaleString()} •
+                      Sold: {Number(item.total_sold).toLocaleString()} •
                       Revenue: Rp {Number(item.total_revenue).toLocaleString()}
                     </p>
                   </div>
@@ -265,7 +265,7 @@ export default function AdminDashboard() {
             ) : (
               <div className="p-8 text-center text-gray-500">
                 <FiShoppingBag size={32} className="mx-auto mb-2 text-gray-400" />
-                Belum ada data penjualan
+                No sales data yet
               </div>
             )}
           </div>
@@ -275,7 +275,7 @@ export default function AdminDashboard() {
       {/* Order Status Breakdown */}
       {stats?.statusBreakdown && Object.keys(stats.statusBreakdown).length > 0 && (
         <div className="mt-6 bg-white border rounded-xl p-5">
-          <h3 className="font-semibold text-gray-800 mb-4">Status Order</h3>
+          <h3 className="font-semibold text-gray-800 mb-4">Order Status</h3>
           <div className="flex flex-wrap gap-3">
             {Object.entries(stats.statusBreakdown).map(([status, count]) => (
               <div key={status} className={`px-4 py-2 rounded-lg ${getStatusColor(status)}`}>

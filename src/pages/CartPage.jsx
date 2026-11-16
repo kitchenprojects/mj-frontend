@@ -17,11 +17,11 @@ export default function CartPage() {
   const [distanceShipping, setDistanceShipping] = useState(null);
 
   const placeOrder = async () => {
-    if (!profile) return alert('Harap login terlebih dahulu');
+    if (!profile) return alert('Please sign in first');
 
     // Check if shipping has been calculated
     if (!distanceShipping) {
-      alert('Harap hitung ongkos kirim terlebih dahulu sebelum melanjutkan pembayaran.');
+      alert('Please calculate shipping fee before proceeding to payment.');
       return;
     }
 
@@ -31,7 +31,7 @@ export default function CartPage() {
       const defaultAddress = addrs.data[0];
 
       if (!defaultAddress) {
-        alert('Tambahkan alamat (termasuk Kota) terlebih dahulu');
+        alert('Please add an address (including City) first');
         setLoading(false);
         return;
       }
@@ -61,7 +61,7 @@ export default function CartPage() {
 
     } catch (error) {
       console.error("Failed to place order:", error);
-      alert('Gagal membuat pesanan. Silakan coba lagi.');
+      alert('Failed to place order. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -73,7 +73,7 @@ export default function CartPage() {
       // Check if Midtrans Snap is loaded
       if (typeof window.snap === 'undefined') {
         console.error('Midtrans Snap not loaded! Check internet connection and script in index.html');
-        alert('Gagal memuat pembayaran. Periksa koneksi internet Anda.');
+        alert('Failed to load payment. Please check your internet connection.');
         setShowPayment(false);
         return;
       }
@@ -118,11 +118,11 @@ export default function CartPage() {
         },
         onPending: function (result) {
           console.log('Payment pending:', result);
-          alert('Menunggu pembayaran...');
+          alert('Waiting for payment confirmation...');
         },
         onError: function (result) {
           console.log('Payment error:', result);
-          alert('Pembayaran gagal. Silakan coba lagi.');
+          alert('Payment failed. Please try again.');
         },
         onClose: function () {
           console.log('Payment popup closed');
@@ -186,8 +186,8 @@ export default function CartPage() {
                   <span className="material-symbols-outlined text-white text-2xl">payments</span>
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white tracking-tight">Selesaikan Pembayaran</h2>
-                  <p className="text-white/70 text-sm">Pilih metode pembayaran favorit Anda</p>
+                  <h2 className="text-xl font-bold text-white tracking-tight">Complete Payment</h2>
+                  <p className="text-white/70 text-sm">Choose your preferred payment method</p>
                 </div>
               </div>
               <button
@@ -204,21 +204,21 @@ export default function CartPage() {
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-white/80 text-lg">receipt_long</span>
                   <div>
-                    <p className="text-white/70 text-xs font-medium">Total Pembayaran</p>
+                    <p className="text-white/70 text-xs font-medium">Total Payment</p>
                     <p className="text-white text-xl font-black tracking-tight">
                       Rp {grandTotalAmount.toLocaleString('id-ID')}
                     </p>
                   </div>
                 </div>
                 <div className="flex flex-col items-end text-right">
-                  <span className="text-white/70 text-xs">{items.length} item</span>
+                  <span className="text-white/70 text-xs">{items.length} items</span>
                   {shippingAmount > 0 && (
-                    <span className="text-white/70 text-xs">+ Ongkir Rp {shippingAmount.toLocaleString('id-ID')}</span>
+                    <span className="text-white/70 text-xs">+ Shipping Rp {shippingAmount.toLocaleString('id-ID')}</span>
                   )}
                   {distanceShipping?.isFreeShipping && (
                     <span className="text-emerald-300 text-xs font-medium flex items-center gap-1">
                       <span className="material-symbols-outlined text-xs">local_shipping</span>
-                      Gratis Ongkir
+                      Free Shipping
                     </span>
                   )}
                 </div>
@@ -238,13 +238,13 @@ export default function CartPage() {
                 <div className="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center mb-5">
                   <span className="material-symbols-outlined text-[40px] text-red-400">error</span>
                 </div>
-                <p className="text-gray-700 font-semibold text-lg">Gagal Memuat Pembayaran</p>
-                <p className="text-gray-400 text-sm mt-2 max-w-xs">Tidak dapat terhubung ke layanan pembayaran. Periksa konfigurasi Midtrans.</p>
+                <p className="text-gray-700 font-semibold text-lg">Failed to Load Payment</p>
+                <p className="text-gray-400 text-sm mt-2 max-w-xs">Cannot connect to payment service. Check Midtrans configuration.</p>
                 <button
                   onClick={() => setShowPayment(false)}
                   className="mt-6 px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors"
                 >
-                  Kembali
+                  Back
                 </button>
               </div>
             )}
@@ -256,8 +256,8 @@ export default function CartPage() {
                   </div>
                   <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-teal-500 animate-spin" style={{ animationDuration: '1.5s' }}></div>
                 </div>
-                <p className="text-gray-600 mt-5 font-medium">Menyiapkan Pembayaran...</p>
-                <p className="text-gray-400 text-sm mt-1">Mohon tunggu sebentar</p>
+                <p className="text-gray-600 mt-5 font-medium">Preparing Payment...</p>
+                <p className="text-gray-400 text-sm mt-1">Please wait a moment</p>
               </div>
             )}
           </div>
@@ -267,12 +267,12 @@ export default function CartPage() {
             <div className="flex items-center justify-center gap-4 text-gray-400 text-xs">
               <div className="flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-sm text-teal-500">verified_user</span>
-                <span>Transaksi Aman</span>
+                <span>Secure Transaction</span>
               </div>
               <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
               <div className="flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-sm text-teal-500">lock</span>
-                <span>Enkripsi SSL</span>
+                <span>SSL Encryption</span>
               </div>
               <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
               <div className="flex items-center gap-1.5">
@@ -326,7 +326,7 @@ export default function CartPage() {
                 <span className="material-symbols-outlined text-white text-4xl">shopping_cart</span>
               </div>
               <h1 className="text-white text-3xl md:text-5xl font-black leading-tight tracking-tight">
-                Keranjang
+                Cart
               </h1>
             </div>
           </div>
@@ -337,15 +337,15 @@ export default function CartPage() {
           <div className="w-24 h-24 rounded-full flex items-center justify-center mb-6" style={{ background: 'linear-gradient(135deg, #E6F7F6 0%, #F0F7F7 100%)' }}>
             <span className="material-symbols-outlined text-[48px]" style={{ color: '#03BEB0' }}>remove_shopping_cart</span>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Keranjang Kosong</h2>
-          <p className="text-gray-500 mb-6 max-w-sm">Anda belum menambahkan item ke keranjang. Yuk mulai pilih menu favorit!</p>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Your Cart is Empty</h2>
+          <p className="text-gray-500 mb-6 max-w-sm">You haven't added any items to your cart yet. Explore our delicious menu!</p>
           <Link
             to="/menu"
             className="flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all hover:opacity-90 shadow-lg"
             style={{ backgroundColor: '#03BEB0' }}
           >
             <span className="material-symbols-outlined text-[18px]">restaurant_menu</span>
-            Lihat Menu
+            Browse Menu
           </Link>
         </div>
       </div>
@@ -379,10 +379,10 @@ export default function CartPage() {
               <span className="material-symbols-outlined text-white text-4xl">shopping_cart</span>
             </div>
             <h1 className="text-white text-3xl md:text-5xl font-black leading-tight tracking-tight">
-              Keranjang
+              Cart
             </h1>
             <p className="text-white/80 text-sm md:text-lg font-medium">
-              {totalQty} item siap untuk dipesan
+              {totalQty} items ready to order
             </p>
           </div>
         </div>
@@ -393,12 +393,12 @@ export default function CartPage() {
         <nav className="flex items-center gap-2 text-sm">
           <Link to="/" className="text-gray-500 hover:text-teal-600 transition-colors flex items-center gap-1">
             <span className="material-symbols-outlined text-[16px]">home</span>
-            Beranda
+            Home
           </Link>
           <span className="material-symbols-outlined text-[16px] text-gray-400">chevron_right</span>
           <span className="text-teal-600 font-semibold flex items-center gap-1">
             <span className="material-symbols-outlined text-[16px]">shopping_cart</span>
-            Keranjang
+            Cart
           </span>
         </nav>
       </div>
@@ -479,7 +479,7 @@ export default function CartPage() {
                       className="flex items-center gap-1 text-xs text-red-400 hover:text-red-500 transition-colors"
                     >
                       <span className="material-symbols-outlined text-[16px]">delete</span>
-                      Hapus
+                      Remove
                     </button>
                   </div>
                 </div>
@@ -499,7 +499,7 @@ export default function CartPage() {
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-24">
               <div className="flex items-center gap-2 mb-5">
                 <span className="material-symbols-outlined text-[20px]" style={{ color: '#03BEB0' }}>receipt_long</span>
-                <h2 className="text-lg font-bold text-gray-800">Ringkasan Pesanan</h2>
+                <h2 className="text-lg font-bold text-gray-800">Order Summary</h2>
               </div>
 
               {(() => {
@@ -510,26 +510,26 @@ export default function CartPage() {
                 return (
                   <div className="space-y-3">
                     <div className="flex justify-between text-gray-600">
-                      <span>Subtotal ({totalQty} item)</span>
+                      <span>Subtotal ({totalQty} items)</span>
                       <span className="font-medium">Rp {subtotal.toLocaleString('id-ID')}</span>
                     </div>
                     <div className="flex justify-between text-gray-600">
-                      <span>Ongkir</span>
+                      <span>Shipping Fee</span>
                       {distanceShipping ? (
                         <span
                           className="font-semibold"
                           style={{ color: distanceShipping.isFreeShipping ? '#10B981' : '#03BEB0' }}
                         >
-                          {distanceShipping.isFreeShipping ? 'GRATIS' : `Rp ${shippingCost.toLocaleString('id-ID')}`}
+                          {distanceShipping.isFreeShipping ? 'FREE' : `Rp ${shippingCost.toLocaleString('id-ID')}`}
                         </span>
                       ) : (
-                        <span className="text-gray-400 text-sm">Hitung alamat dulu</span>
+                        <span className="text-gray-400 text-sm">Calculate address first</span>
                       )}
                     </div>
                     {distanceShipping && !distanceShipping.isFreeShipping && (
                       <p className="text-xs text-gray-500 bg-gray-50 p-2 rounded-lg flex items-center gap-1.5">
                         <span className="material-symbols-outlined text-[14px]">location_on</span>
-                        {distanceShipping.distance.km} km × Rp 3.000/km
+                        {distanceShipping.distance.km} km × Rp 3,000/km
                       </p>
                     )}
                     <div className="border-t pt-4 mt-4">
@@ -551,12 +551,12 @@ export default function CartPage() {
                 {loading ? (
                   <>
                     <span className="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
-                    Memproses...
+                    Processing...
                   </>
                 ) : (
                   <>
                     <span className="material-symbols-outlined text-[18px]">payments</span>
-                    Lanjut ke Pembayaran
+                    Proceed to Payment
                   </>
                 )}
               </button>
@@ -564,7 +564,7 @@ export default function CartPage() {
               {/* Divider */}
               <div className="flex items-center gap-3 my-5">
                 <div className="flex-1 border-t border-gray-200"></div>
-                <span className="text-gray-400 text-sm">atau</span>
+                <span className="text-gray-400 text-sm">or</span>
                 <div className="flex-1 border-t border-gray-200"></div>
               </div>
 
@@ -581,7 +581,7 @@ export default function CartPage() {
                 Order via WhatsApp
               </a>
               <p className="text-xs text-gray-500 text-center mt-2">
-                Untuk custom order atau tanya ketersediaan
+                For custom orders or availability inquiries
               </p>
             </div>
           </aside>

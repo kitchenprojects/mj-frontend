@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../services/api';
 import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 
 export default function ReceiptPage() {
     const { orderId } = useParams();
@@ -17,7 +17,7 @@ export default function ReceiptPage() {
                 setOrder(data);
             } catch (err) {
                 console.error('Failed to fetch order:', err);
-                setError('Gagal memuat struk pembayaran');
+                setError('Failed to load payment receipt');
             } finally {
                 setLoading(false);
             }
@@ -37,7 +37,7 @@ export default function ReceiptPage() {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center">
                 <span className="material-symbols-outlined text-[48px] text-gray-300 animate-spin">progress_activity</span>
-                <p className="text-gray-400 mt-4">Memuat struk...</p>
+                <p className="text-gray-400 mt-4">Loading receipt...</p>
             </div>
         );
     }
@@ -56,7 +56,7 @@ export default function ReceiptPage() {
                     style={{ color: '#03BEB0' }}
                 >
                     <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-                    Kembali ke Pesanan
+                    Back to Orders
                 </Link>
             </div>
         );
@@ -69,14 +69,14 @@ export default function ReceiptPage() {
                 <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: 'linear-gradient(135deg, #E6F7F6 0%, #F0F7F7 100%)' }}>
                     <span className="material-symbols-outlined text-[40px]" style={{ color: '#03BEB0' }}>search_off</span>
                 </div>
-                <p className="text-gray-600 font-semibold mb-4">Order tidak ditemukan</p>
+                <p className="text-gray-600 font-semibold mb-4">Order not found</p>
                 <Link
                     to="/orders"
                     className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold transition-colors hover:opacity-80"
                     style={{ color: '#03BEB0' }}
                 >
                     <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-                    Kembali ke Pesanan
+                    Back to Orders
                 </Link>
             </div>
         );
@@ -112,7 +112,7 @@ export default function ReceiptPage() {
                             </span>
                         </div>
                         <h1 className="text-white text-2xl md:text-4xl font-black leading-tight tracking-tight">
-                            {isPaid ? 'Pembayaran Berhasil' : 'Menunggu Pembayaran'}
+                            {isPaid ? 'Payment Successful' : 'Waiting for Payment'}
                         </h1>
                     </div>
                 </div>
@@ -127,7 +127,7 @@ export default function ReceiptPage() {
                         className="flex items-center gap-2 text-gray-500 hover:text-teal-600 transition-colors text-sm font-medium"
                     >
                         <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-                        Kembali ke Pesanan
+                        Back to Orders
                     </Link>
                     <button
                         onClick={handlePrint}
@@ -135,7 +135,7 @@ export default function ReceiptPage() {
                         style={{ backgroundColor: '#03BEB0' }}
                     >
                         <span className="material-symbols-outlined text-[18px]">print</span>
-                        Cetak Struk
+                        Print Receipt
                     </button>
                 </div>
 
@@ -151,7 +151,7 @@ export default function ReceiptPage() {
                             <h1 className="text-2xl font-black tracking-tight">Dapur Nekti</h1>
                         </div>
                         <p className="text-white/80 text-sm print:text-gray-500">Setiabudi Regency no.G 110, Cihideung, Kec. Parongpong, Kabupaten Bandung Barat, Jawa Barat 40559</p>
-                        <p className="text-white/80 text-sm print:text-gray-500">Telp: (021) 1234-5678</p>
+                        <p className="text-white/80 text-sm print:text-gray-500">Phone: (021) 1234-5678</p>
                     </div>
 
                     {/* Payment Status Badge */}
@@ -159,12 +159,12 @@ export default function ReceiptPage() {
                         {isPaid ? (
                             <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-50 text-teal-700 rounded-xl font-semibold border border-teal-200">
                                 <span className="material-symbols-outlined text-[18px]">verified</span>
-                                Pembayaran Berhasil
+                                Payment Successful
                             </span>
                         ) : (
                             <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-50 text-amber-700 rounded-xl font-semibold border border-amber-200">
                                 <span className="material-symbols-outlined text-[18px]">schedule</span>
-                                Menunggu Pembayaran
+                                Pending Payment
                             </span>
                         )}
                     </div>
@@ -173,17 +173,17 @@ export default function ReceiptPage() {
                     <div className="p-6 border-b border-gray-100">
                         <div className="grid grid-cols-2 gap-4 text-sm">
                             <div className="bg-gray-50 rounded-xl p-3">
-                                <p className="text-gray-400 text-xs mb-1">No. Order</p>
+                                <p className="text-gray-400 text-xs mb-1">Order No.</p>
                                 <p className="font-mono font-bold text-gray-800">#{order.order_id.substring(0, 8).toUpperCase()}</p>
                             </div>
                             <div className="bg-gray-50 rounded-xl p-3 text-right">
-                                <p className="text-gray-400 text-xs mb-1">Tanggal</p>
+                                <p className="text-gray-400 text-xs mb-1">Date</p>
                                 <p className="font-semibold text-gray-800">
-                                    {format(new Date(order.order_date), 'dd MMM yyyy, HH:mm', { locale: id })}
+                                    {format(new Date(order.order_date), 'dd MMM yyyy, HH:mm', { locale: enUS })}
                                 </p>
                             </div>
                             <div className="bg-gray-50 rounded-xl p-3">
-                                <p className="text-gray-400 text-xs mb-1">Pelanggan</p>
+                                <p className="text-gray-400 text-xs mb-1">Customer</p>
                                 <p className="font-semibold text-gray-800">{order.user_name || 'Customer'}</p>
                             </div>
                             <div className="bg-gray-50 rounded-xl p-3 text-right">
@@ -199,7 +199,7 @@ export default function ReceiptPage() {
                             <div className="flex items-start gap-3">
                                 <span className="material-symbols-outlined text-[20px]" style={{ color: '#03BEB0' }}>location_on</span>
                                 <div>
-                                    <p className="text-xs text-gray-400 mb-1">Alamat Pengiriman</p>
+                                    <p className="text-xs text-gray-400 mb-1">Delivery Address</p>
                                     <p className="text-sm text-gray-800 font-medium">
                                         {order.street}{order.city ? `, ${order.city}` : ''}{order.postal_code ? ` ${order.postal_code}` : ''}
                                     </p>
@@ -212,7 +212,7 @@ export default function ReceiptPage() {
                     <div className="p-6">
                         <div className="flex items-center gap-2 mb-4">
                             <span className="material-symbols-outlined text-[18px]" style={{ color: '#03BEB0' }}>receipt_long</span>
-                            <h3 className="font-bold text-gray-800">Detail Pesanan</h3>
+                            <h3 className="font-bold text-gray-800">Order Details</h3>
                         </div>
                         <div className="space-y-3">
                             {order.items?.map((item, idx) => (
@@ -248,13 +248,13 @@ export default function ReceiptPage() {
                                     <span className="text-gray-700 font-medium">Rp {itemsSubtotal.toLocaleString('id-ID')}</span>
                                 </div>
                                 <div className="flex justify-between items-center mb-3">
-                                    <span className="text-gray-500">Ongkos Kirim</span>
+                                    <span className="text-gray-500">Shipping Fee</span>
                                     {shippingCost > 0 ? (
                                         <span className="font-semibold text-gray-700">Rp {shippingCost.toLocaleString('id-ID')}</span>
                                     ) : isFreeShipping ? (
-                                        <span className="font-semibold" style={{ color: '#10B981' }}>Gratis (Min. Rp 500.000)</span>
+                                        <span className="font-semibold" style={{ color: '#10B981' }}>Free (Min. Rp 500,000)</span>
                                     ) : (
-                                        <span className="font-semibold" style={{ color: '#03BEB0' }}>Gratis</span>
+                                        <span className="font-semibold" style={{ color: '#03BEB0' }}>Free</span>
                                     )}
                                 </div>
                                 <div className="flex justify-between items-center pt-3 border-t border-teal-200">
@@ -271,11 +271,37 @@ export default function ReceiptPage() {
                     <div className="p-6 text-center border-t border-gray-100">
                         <div className="flex items-center justify-center gap-2 mb-2" style={{ color: '#03BEB0' }}>
                             <span className="material-symbols-outlined text-[20px]">favorite</span>
-                            <p className="font-semibold">Terima kasih!</p>
+                            <p className="font-semibold">Thank you!</p>
                         </div>
-                        <p className="text-gray-500 text-sm">Terima kasih telah berbelanja di Dapur Nekti</p>
-                        <p className="text-gray-400 text-xs mt-1">Struk ini merupakan bukti pembayaran yang sah</p>
+                        <p className="text-gray-500 text-sm">Thank you for ordering with Dapur Nekti</p>
+                        <p className="text-gray-400 text-xs mt-1">This receipt is a valid proof of payment</p>
                     </div>
+                </div>
+            </div>
+
+            {/* Print Styles */}
+            <style>{`
+                @media print {
+                    body * {
+                        visibility: hidden;
+                    }
+                    .print\\:hidden {
+                        display: none !important;
+                    }
+                    #root, #root * {
+                        visibility: visible;
+                    }
+                    #root {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                    }
+                }
+            `}</style>
+        </div>
+    );
+}
                 </div>
             </div>
 

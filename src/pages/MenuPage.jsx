@@ -87,7 +87,7 @@ export default function MenuPage() {
 
   const handleAddToOrder = (item) => {
     addItem(item, 1, '', []);
-    showSuccess(`${item.menu_name} ditambahkan ke keranjang!`);
+    showSuccess(`${item.menu_name} added to cart!`);
   };
 
   const handleItemClick = (item) => {
@@ -96,7 +96,7 @@ export default function MenuPage() {
 
   const handleAddWithCustomization = (item, quantity, notes, addons) => {
     addItem(item, quantity, notes, addons);
-    showSuccess(`${item.menu_name} ditambahkan ke keranjang!`);
+    showSuccess(`${item.menu_name} added to cart!`);
     setSelectedItem(null);
   };
 
@@ -120,10 +120,10 @@ export default function MenuPage() {
         >
           <div className="flex flex-col gap-4 text-center px-4 max-w-3xl">
             <h1 className="text-white text-4xl md:text-6xl font-black leading-tight tracking-tight">
-              Daftar Menu
+              Our Menu
             </h1>
             <h2 className="text-gray-100 text-base md:text-xl font-medium leading-relaxed max-w-2xl mx-auto">
-              Jelajahi menu kuliner kami yang beragam, dibuat dengan bahan-bahan segar dan penuh cinta.
+              Explore our diverse culinary menu, prepared with fresh ingredients and passion.
             </h2>
           </div>
         </div>
@@ -144,7 +144,7 @@ export default function MenuPage() {
                     </div>
                     <input
                       className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl rounded-l-none text-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-400 border-none bg-white h-full placeholder:text-gray-400 px-4 pl-2 text-base font-normal leading-normal"
-                      placeholder="Cari menu..."
+                      placeholder="Search menu..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -155,7 +155,7 @@ export default function MenuPage() {
               {/* Categories Nav */}
               <div className="flex flex-col bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <div className="flex flex-col mb-3">
-                  <h3 className="text-gray-800 text-lg font-bold leading-normal">Kategori</h3>
+                  <h3 className="text-gray-800 text-lg font-bold leading-normal">Categories</h3>
                 </div>
                 <div className="flex flex-col gap-1">
                   {/* All categories */}
@@ -172,7 +172,7 @@ export default function MenuPage() {
                     </span>
                     <p className={`text-sm font-medium leading-normal ${activeCategory === '' ? 'font-bold text-teal-600' : 'text-gray-700 group-hover:text-teal-500'
                       }`}>
-                      Semua Menu
+                      All Menus
                     </p>
                   </button>
 
@@ -200,9 +200,9 @@ export default function MenuPage() {
 
               {/* Dietary Filters */}
               <div className="flex flex-col gap-2">
-                <h3 className="text-sm font-semibold text-gray-500 px-1">Preferensi Diet</h3>
+                <h3 className="text-sm font-semibold text-gray-500 px-1">Dietary Preferences</h3>
                 <div className="flex flex-wrap gap-2">
-                  {['Vegetarian', 'Vegan', 'Halal', 'Pedas'].map((filter) => (
+                  {['Vegetarian', 'Vegan', 'Halal', 'Spicy'].map((filter) => (
                     <button
                       key={filter}
                       onClick={() => toggleDietaryFilter(filter)}
@@ -224,14 +224,14 @@ export default function MenuPage() {
             {/* Search Results Info */}
             {searchQuery && (
               <p className="text-sm text-gray-500">
-                Menampilkan hasil untuk "{searchQuery}"
+                Showing results for "{searchQuery}"
               </p>
             )}
 
             {/* Menu Sections by Category */}
             {categories.length === 0 ? (
               <div className="text-center py-12 bg-white rounded-2xl border">
-                <p className="text-gray-500">Memuat kategori...</p>
+                <p className="text-gray-500">Loading categories...</p>
               </div>
             ) : (
               categories.map((cat) => {
@@ -272,7 +272,7 @@ export default function MenuPage() {
             {/* Empty State */}
             {items.length > 0 && categories.every(cat => filterItems(itemsByCategory[cat.category_id] || []).length === 0) && (
               <div className="text-center py-12 bg-white rounded-2xl border">
-                <p className="text-gray-500">Tidak ada menu ditemukan</p>
+                <p className="text-gray-500">No menus found</p>
               </div>
             )}
           </main>
@@ -336,7 +336,7 @@ function MenuCard({ item, onAdd, onClick }) {
           </span>
         </div>
         <p className="text-gray-500 text-sm line-clamp-2 mb-4 flex-grow">
-          {item.description || 'Menu lezat siap dipesan'}
+          {item.description || 'Delicious dish ready to order'}
         </p>
 
         {/* Action Buttons */}
@@ -350,7 +350,7 @@ function MenuCard({ item, onAdd, onClick }) {
             className="flex-1 py-2.5 bg-teal-500 text-white font-semibold text-sm rounded-lg hover:bg-teal-600 transition-colors flex items-center justify-center gap-1.5"
           >
             <span className="material-symbols-outlined text-[18px]">add</span>
-            Tambah
+            Add
           </button>
 
           {/* Custom Order Button */}
@@ -362,7 +362,7 @@ function MenuCard({ item, onAdd, onClick }) {
             className="py-2.5 px-3 border-2 border-teal-500 text-teal-600 font-semibold text-sm rounded-lg hover:bg-teal-50 transition-colors flex items-center justify-center gap-1.5"
           >
             <span className="material-symbols-outlined text-[18px]">tune</span>
-            Custom
+            Customize
           </button>
         </div>
       </div>

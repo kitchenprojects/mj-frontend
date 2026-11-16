@@ -37,10 +37,10 @@ export default function ProfilePage() {
               </span>
             </div>
             <h1 className="text-white text-4xl md:text-6xl font-black leading-tight tracking-tight">
-              Profil Saya
+              My Profile
             </h1>
             <p className="text-white/80 text-base md:text-xl font-medium leading-relaxed max-w-xl mx-auto">
-              Kelola informasi akun dan alamat pengiriman Anda dengan mudah
+              Easily manage your account information and delivery addresses
             </p>
           </div>
         </div>
@@ -54,12 +54,12 @@ export default function ProfilePage() {
             className="text-gray-500 hover:text-teal-600 transition-colors flex items-center gap-1"
           >
             <span className="material-symbols-outlined text-[16px]">home</span>
-            Beranda
+            Home
           </Link>
           <span className="material-symbols-outlined text-[16px] text-gray-400">chevron_right</span>
           <span className="text-teal-600 font-semibold flex items-center gap-1">
             <span className="material-symbols-outlined text-[16px]">person</span>
-            Profil
+            Profile
           </span>
         </nav>
       </div>
@@ -77,7 +77,7 @@ export default function ProfilePage() {
                 <div className="p-4 border-b border-gray-100" style={{ background: 'linear-gradient(135deg, #E6F7F6 0%, #F0F7F7 100%)' }}>
                   <div className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-[20px]" style={{ color: '#03BEB0' }}>widgets</span>
-                    <h3 className="font-semibold text-gray-800">Akses Cepat</h3>
+                    <h3 className="font-semibold text-gray-800">Quick Access</h3>
                   </div>
                 </div>
                 <div className="p-3">
@@ -86,7 +86,7 @@ export default function ProfilePage() {
                     className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-teal-50 transition-colors group"
                   >
                     <span className="material-symbols-outlined text-gray-400 group-hover:text-teal-500 transition-colors">receipt_long</span>
-                    <span className="text-gray-700 group-hover:text-teal-600 font-medium transition-colors">Riwayat Pesanan</span>
+                    <span className="text-gray-700 group-hover:text-teal-600 font-medium transition-colors">Order History</span>
                     <span className="material-symbols-outlined text-gray-300 group-hover:text-teal-400 ml-auto text-[18px]">chevron_right</span>
                   </Link>
                   <Link
@@ -94,7 +94,7 @@ export default function ProfilePage() {
                     className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-teal-50 transition-colors group"
                   >
                     <span className="material-symbols-outlined text-gray-400 group-hover:text-teal-500 transition-colors">restaurant_menu</span>
-                    <span className="text-gray-700 group-hover:text-teal-600 font-medium transition-colors">Pesan Menu</span>
+                    <span className="text-gray-700 group-hover:text-teal-600 font-medium transition-colors">Browse Menu</span>
                     <span className="material-symbols-outlined text-gray-300 group-hover:text-teal-400 ml-auto text-[18px]">chevron_right</span>
                   </Link>
                   <Link
@@ -102,7 +102,7 @@ export default function ProfilePage() {
                     className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-teal-50 transition-colors group"
                   >
                     <span className="material-symbols-outlined text-gray-400 group-hover:text-teal-500 transition-colors">shopping_cart</span>
-                    <span className="text-gray-700 group-hover:text-teal-600 font-medium transition-colors">Keranjang</span>
+                    <span className="text-gray-700 group-hover:text-teal-600 font-medium transition-colors">Cart</span>
                     <span className="material-symbols-outlined text-gray-300 group-hover:text-teal-400 ml-auto text-[18px]">chevron_right</span>
                   </Link>
                 </div>

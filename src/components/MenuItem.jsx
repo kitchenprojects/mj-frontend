@@ -40,7 +40,7 @@ export default function MenuItem({ item, onAdd, onCustomize }) {
           {item.menu_name}
         </h3>
         <p className="text-xs md:text-sm text-gray-400 mb-3 flex-grow line-clamp-2">
-          {item.description || 'Menu lezat siap dipesan'}
+          {item.description || 'Delicious dish ready to order'}
         </p>
 
         {/* Price */}
@@ -58,7 +58,7 @@ export default function MenuItem({ item, onAdd, onCustomize }) {
             onClick={() => onAdd?.(item)}
           >
             <FaPlus size={12} />
-            <span>Tambah</span>
+            <span>Add</span>
           </button>
 
           {onCustomize && (
@@ -68,7 +68,7 @@ export default function MenuItem({ item, onAdd, onCustomize }) {
               onClick={() => onCustomize?.(item)}
             >
               <FiEdit2 size={14} />
-              <span>Custom</span>
+              <span>Customize</span>
             </button>
           )}
         </div>
@@ -81,7 +81,7 @@ export default function MenuItem({ item, onAdd, onCustomize }) {
             onClick={() => onCustomize?.(item)}
           >
             <FiEdit2 size={14} />
-            <span>Custom Order</span>
+            <span>Customize Order</span>
           </button>
         )}
       </div>

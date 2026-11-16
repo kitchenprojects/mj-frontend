@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 
 // Helper to get status color and icon
 const getStatusVisuals = (status) => {
@@ -15,37 +15,37 @@ const getStatusVisuals = (status) => {
       return {
         icon: 'schedule',
         color: 'text-amber-700 bg-amber-50 border-amber-200',
-        text: 'Menunggu'
+        text: 'Pending'
       };
     case 'confirmed':
       return {
         icon: 'task_alt',
         color: 'text-blue-700 bg-blue-50 border-blue-200',
-        text: 'Dikonfirmasi'
+        text: 'Confirmed'
       };
     case 'processing':
       return {
         icon: 'skillet',
         color: 'text-orange-700 bg-orange-50 border-orange-200',
-        text: 'Diproses'
+        text: 'Processing'
       };
     case 'out for delivery':
       return {
         icon: 'local_shipping',
         color: 'text-purple-700 bg-purple-50 border-purple-200',
-        text: 'Dalam Pengiriman'
+        text: 'Out for Delivery'
       };
     case 'delivered':
       return {
         icon: 'check_circle',
         color: 'text-teal-700 bg-teal-50 border-teal-200',
-        text: 'Selesai'
+        text: 'Delivered'
       };
     case 'cancelled':
       return {
         icon: 'cancel',
         color: 'text-red-700 bg-red-50 border-red-200',
-        text: 'Dibatalkan'
+        text: 'Cancelled'
       };
     default:
       return {
@@ -77,7 +77,7 @@ export default function OrderTrackingPage() {
   // Handle pay now click
   const handlePayNow = (order) => {
     if (!order.snap_token) {
-      alert('Token pembayaran tidak tersedia. Silakan hubungi customer service.');
+      alert('Payment token is unavailable. Please contact customer service.');
       return;
     }
     setActiveOrder(order);
@@ -90,7 +90,7 @@ export default function OrderTrackingPage() {
       // Check if Midtrans Snap is loaded
       if (typeof window.snap === 'undefined') {
         console.error('Midtrans Snap not loaded!');
-        alert('Gagal memuat pembayaran. Periksa koneksi internet Anda.');
+        alert('Failed to load payment. Please check your internet connection.');
         setShowPayment(false);
         return;
       }
@@ -133,11 +133,11 @@ export default function OrderTrackingPage() {
         },
         onPending: function (result) {
           console.log('Payment pending:', result);
-          alert('Menunggu pembayaran...');
+          alert('Waiting for payment...');
         },
         onError: function (result) {
           console.log('Payment error:', result);
-          alert('Pembayaran gagal. Silakan coba lagi.');
+          alert('Payment failed. Please try again.');
         },
         onClose: function () {
           console.log('Payment popup closed');
@@ -186,7 +186,7 @@ export default function OrderTrackingPage() {
                     <span className="material-symbols-outlined text-white text-2xl">payments</span>
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-white tracking-tight">Selesaikan Pembayaran</h2>
+                    <h2 className="text-xl font-bold text-white tracking-tight">Complete Payment</h2>
                     <p className="text-white/70 text-sm">Order #{activeOrder.order_id.substring(0, 8).toUpperCase()}</p>
                   </div>
                 </div>
@@ -204,7 +204,7 @@ export default function OrderTrackingPage() {
                   <div className="flex items-center gap-3">
                     <span className="material-symbols-outlined text-white/80 text-lg">receipt_long</span>
                     <div>
-                      <p className="text-white/70 text-xs font-medium">Total Pembayaran</p>
+                      <p className="text-white/70 text-xs font-medium">Total Payment</p>
                       <p className="text-white text-xl font-black tracking-tight">
                         Rp {Number(activeOrder.total_amount).toLocaleString('id-ID')}
                       </p>
@@ -228,8 +228,8 @@ export default function OrderTrackingPage() {
                   </div>
                   <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-teal-500 animate-spin" style={{ animationDuration: '1.5s' }}></div>
                 </div>
-                <p className="text-gray-600 mt-5 font-medium">Menyiapkan Pembayaran...</p>
-                <p className="text-gray-400 text-sm mt-1">Mohon tunggu sebentar</p>
+                <p className="text-gray-600 mt-5 font-medium">Preparing Payment...</p>
+                <p className="text-gray-400 text-sm mt-1">Please wait a moment</p>
               </div>
             </div>
 
@@ -238,12 +238,12 @@ export default function OrderTrackingPage() {
               <div className="flex items-center justify-center gap-4 text-gray-400 text-xs">
                 <div className="flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-sm text-teal-500">verified_user</span>
-                  <span>Transaksi Aman</span>
+                  <span>Secure Transaction</span>
                 </div>
                 <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
                 <div className="flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-sm text-teal-500">lock</span>
-                  <span>Enkripsi SSL</span>
+                  <span>SSL Encryption</span>
                 </div>
                 <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
                 <div className="flex items-center gap-1.5">
@@ -301,10 +301,10 @@ export default function OrderTrackingPage() {
               </span>
             </div>
             <h1 className="text-white text-4xl md:text-6xl font-black leading-tight tracking-tight">
-              Pesanan Saya
+              My Orders
             </h1>
             <p className="text-white/80 text-base md:text-xl font-medium leading-relaxed max-w-xl mx-auto">
-              Lacak status pesanan dan lihat riwayat transaksi Anda
+              Track your order status and view your transaction history
             </p>
           </div>
         </div>
@@ -318,12 +318,12 @@ export default function OrderTrackingPage() {
             className="text-gray-500 hover:text-teal-600 transition-colors flex items-center gap-1"
           >
             <span className="material-symbols-outlined text-[16px]">home</span>
-            Beranda
+            Home
           </Link>
           <span className="material-symbols-outlined text-[16px] text-gray-400">chevron_right</span>
           <span className="text-teal-600 font-semibold flex items-center gap-1">
             <span className="material-symbols-outlined text-[16px]">receipt_long</span>
-            Pesanan
+            Orders
           </span>
         </nav>
       </div>
@@ -340,7 +340,7 @@ export default function OrderTrackingPage() {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-gray-800">{orders.length}</p>
-                  <p className="text-xs text-gray-500">Total Pesanan</p>
+                  <p className="text-xs text-gray-500">Total Orders</p>
                 </div>
               </div>
             </div>
@@ -353,7 +353,7 @@ export default function OrderTrackingPage() {
                   <p className="text-2xl font-bold text-gray-800">
                     {orders.filter(o => ['pending', 'confirmed', 'processing'].includes(o.status?.toLowerCase())).length}
                   </p>
-                  <p className="text-xs text-gray-500">Dalam Proses</p>
+                  <p className="text-xs text-gray-500">In Progress</p>
                 </div>
               </div>
             </div>
@@ -366,7 +366,7 @@ export default function OrderTrackingPage() {
                   <p className="text-2xl font-bold text-gray-800">
                     {orders.filter(o => o.status?.toLowerCase() === 'out for delivery').length}
                   </p>
-                  <p className="text-xs text-gray-500">Dikirim</p>
+                  <p className="text-xs text-gray-500">Dispatched</p>
                 </div>
               </div>
             </div>
@@ -379,7 +379,7 @@ export default function OrderTrackingPage() {
                   <p className="text-2xl font-bold text-gray-800">
                     {orders.filter(o => o.status?.toLowerCase() === 'delivered').length}
                   </p>
-                  <p className="text-xs text-gray-500">Selesai</p>
+                  <p className="text-xs text-gray-500">Delivered</p>
                 </div>
               </div>
             </div>
@@ -390,7 +390,7 @@ export default function OrderTrackingPage() {
         {loading && (
           <div className="flex flex-col items-center justify-center py-16">
             <span className="material-symbols-outlined text-[48px] text-gray-300 animate-spin">progress_activity</span>
-            <p className="text-gray-400 mt-4">Memuat pesanan...</p>
+            <p className="text-gray-400 mt-4">Loading orders...</p>
           </div>
         )}
 
@@ -403,9 +403,9 @@ export default function OrderTrackingPage() {
             >
               <span className="material-symbols-outlined text-[48px]" style={{ color: '#03BEB0' }}>shopping_bag</span>
             </div>
-            <h2 className="text-xl font-bold text-gray-800 mb-2">Belum Ada Pesanan</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-2">No Orders Yet</h2>
             <p className="text-gray-500 max-w-sm mb-6">
-              Anda belum membuat pesanan. Yuk mulai pesan menu favorit Anda!
+              You haven't placed any orders yet. Start ordering your favorite menu!
             </p>
             <Link
               to="/menu"
@@ -413,7 +413,7 @@ export default function OrderTrackingPage() {
               style={{ backgroundColor: '#03BEB0' }}
             >
               <span className="material-symbols-outlined text-[18px]">restaurant_menu</span>
-              Lihat Menu
+              Browse Menu
             </Link>
           </div>
         )}
@@ -444,7 +444,7 @@ export default function OrderTrackingPage() {
                           </h2>
                           <p className="text-sm text-gray-500 flex items-center gap-1.5 mt-1">
                             <span className="material-symbols-outlined text-[14px]">calendar_today</span>
-                            {format(new Date(o.order_date), 'dd MMMM yyyy, HH:mm', { locale: id })}
+                            {format(new Date(o.order_date), 'dd MMMM yyyy, HH:mm', { locale: enUS })}
                           </p>
                         </div>
                       </div>
@@ -479,7 +479,7 @@ export default function OrderTrackingPage() {
                           <span className="truncate max-w-[200px] md:max-w-none">
                             {o.street
                               ? `${o.street}${o.city ? `, ${o.city}` : ''}${o.postal_code ? ` ${o.postal_code}` : ''}`
-                              : 'Alamat tidak tersedia'}
+                              : 'Address unavailable'}
                           </span>
                         </div>
                         {/* Payment Status Indicator */}
@@ -487,12 +487,12 @@ export default function OrderTrackingPage() {
                           {o.payment_status === 'Paid' ? (
                             <span className="inline-flex items-center gap-1 text-xs font-medium text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
                               <span className="material-symbols-outlined text-[12px]">check_circle</span>
-                              Lunas
+                              Paid
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
                               <span className="material-symbols-outlined text-[12px]">schedule</span>
-                              Menunggu Pembayaran
+                              Pending Payment
                             </span>
                           )}
                         </div>
@@ -508,7 +508,7 @@ export default function OrderTrackingPage() {
                             style={{ backgroundColor: '#03BEB0' }}
                           >
                             <span className="material-symbols-outlined text-[16px]">payments</span>
-                            Bayar Sekarang
+                            Pay Now
                           </button>
                         )}
                         <Link
@@ -516,7 +516,7 @@ export default function OrderTrackingPage() {
                           className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:opacity-80"
                           style={{ color: '#03BEB0' }}
                         >
-                          Lihat Detail
+                          View Details
                           <span className="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
                         </Link>
                       </div>

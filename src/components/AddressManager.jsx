@@ -42,7 +42,7 @@ const AddressModal = ({ address, onClose, onSave }) => {
                 </span>
               </div>
               <h3 className="text-lg font-bold text-white">
-                {address ? 'Edit Alamat' : 'Tambah Alamat Baru'}
+                {address ? 'Edit Address' : 'Add New Address'}
               </h3>
             </div>
             <button
@@ -60,13 +60,13 @@ const AddressModal = ({ address, onClose, onSave }) => {
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[16px] text-gray-400">label</span>
-                Label Alamat
+                Address Label
               </label>
               <input
                 type="text"
-                {...register('label', { required: 'Label wajib diisi' })}
+                {...register('label', { required: 'Label is required' })}
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all"
-                placeholder="Contoh: Rumah, Kantor, dll"
+                placeholder="e.g. Home, Office, etc."
               />
               {errors.label && <p className="mt-1 text-xs text-red-500">{errors.label.message}</p>}
             </div>
@@ -75,13 +75,13 @@ const AddressModal = ({ address, onClose, onSave }) => {
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[16px] text-gray-400">signpost</span>
-                Alamat Lengkap
+                Full Address
               </label>
               <input
                 type="text"
-                {...register('street', { required: 'Alamat wajib diisi' })}
+                {...register('street', { required: 'Address is required' })}
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all"
-                placeholder="Jalan, No. Rumah, RT/RW, Kelurahan"
+                placeholder="Street name, Unit No., District"
               />
               {errors.street && <p className="mt-1 text-xs text-red-500">{errors.street.message}</p>}
             </div>
@@ -91,20 +91,20 @@ const AddressModal = ({ address, onClose, onSave }) => {
               <div>
                 <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[16px] text-gray-400">location_city</span>
-                  Kota
+                  City
                 </label>
                 <input
                   type="text"
-                  {...register('city', { required: 'Kota wajib diisi' })}
+                  {...register('city', { required: 'City is required' })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all"
-                  placeholder="Nama Kota"
+                  placeholder="City Name"
                 />
                 {errors.city && <p className="mt-1 text-xs text-red-500">{errors.city.message}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[16px] text-gray-400">markunread_mailbox</span>
-                  Kode Pos
+                  Postal Code
                 </label>
                 <input
                   type="text"
@@ -125,7 +125,7 @@ const AddressModal = ({ address, onClose, onSave }) => {
                 />
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-[18px] text-gray-400 group-hover:text-teal-500 transition-colors">home</span>
-                  <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Jadikan alamat utama</span>
+                  <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Set as default address</span>
                 </div>
               </label>
             </div>
@@ -139,7 +139,7 @@ const AddressModal = ({ address, onClose, onSave }) => {
               className="flex-1 py-3 px-4 border-2 border-gray-200 text-gray-600 font-semibold rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
             >
               <span className="material-symbols-outlined text-[18px]">close</span>
-              Batal
+              Cancel
             </button>
             <button
               type="submit"
@@ -150,12 +150,12 @@ const AddressModal = ({ address, onClose, onSave }) => {
               {isSubmitting ? (
                 <>
                   <span className="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
-                  Menyimpan...
+                  Saving...
                 </>
               ) : (
                 <>
                   <span className="material-symbols-outlined text-[18px]">save</span>
-                  Simpan Alamat
+                  Save Address
                 </>
               )}
             </button>
@@ -202,34 +202,34 @@ export default function AddressManager() {
     try {
       if (editingAddress) {
         await api.put(`/users/me/addresses/${editingAddress.address_id}`, data);
-        showSuccess('Alamat berhasil diperbarui!');
+        showSuccess('Address updated successfully!');
       } else {
         await api.post(`/users/me/addresses`, data);
-        showSuccess('Alamat baru berhasil ditambahkan!');
+        showSuccess('New address added successfully!');
       }
       handleModalClose();
       loadAddresses();
     } catch (error) {
       console.error('Failed to save address:', error);
-      showError('Gagal menyimpan alamat.');
+      showError('Failed to save address.');
     }
   };
 
   const handleDelete = async (addressId) => {
     const isConfirmed = await confirmAction(
-      'Hapus Alamat?',
-      'Alamat ini akan dihapus secara permanen.',
-      'Ya, Hapus',
-      'Batal'
+      'Delete Address?',
+      'This address will be permanently deleted.',
+      'Yes, Delete',
+      'Cancel'
     );
     if (isConfirmed) {
       try {
         await api.delete(`/users/me/addresses/${addressId}`);
-        showSuccess('Alamat berhasil dihapus!');
+        showSuccess('Address deleted successfully!');
         loadAddresses();
       } catch (error) {
         console.error('Failed to delete address:', error);
-        showError('Gagal menghapus alamat.');
+        showError('Failed to delete address.');
       }
     }
   };
@@ -250,8 +250,8 @@ export default function AddressManager() {
               <span className="material-symbols-outlined text-white text-[24px]">location_on</span>
             </div>
             <div>
-              <h2 className="text-lg font-bold text-gray-800">Alamat Saya</h2>
-              <p className="text-sm text-gray-500">Kelola alamat pengiriman Anda</p>
+              <h2 className="text-lg font-bold text-gray-800">My Addresses</h2>
+              <p className="text-sm text-gray-500">Manage your delivery addresses</p>
             </div>
           </div>
           <button
@@ -263,7 +263,7 @@ export default function AddressManager() {
             style={{ backgroundColor: '#03BEB0' }}
           >
             <span className="material-symbols-outlined text-[18px]">add</span>
-            Tambah
+            Add
           </button>
         </div>
       </div>
@@ -273,7 +273,7 @@ export default function AddressManager() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-12">
             <span className="material-symbols-outlined text-[48px] text-gray-300 animate-spin">progress_activity</span>
-            <p className="text-gray-400 mt-3">Memuat alamat...</p>
+            <p className="text-gray-400 mt-3">Loading addresses...</p>
           </div>
         ) : addresses.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -283,8 +283,8 @@ export default function AddressManager() {
             >
               <span className="material-symbols-outlined text-[40px]" style={{ color: '#03BEB0' }}>add_location</span>
             </div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-1">Belum Ada Alamat</h3>
-            <p className="text-gray-500 text-sm mb-4">Tambahkan alamat pengiriman untuk mempermudah pemesanan</p>
+            <h3 className="text-lg font-semibold text-gray-800 mb-1">No Addresses Yet</h3>
+            <p className="text-gray-500 text-sm mb-4">Add a delivery address to make ordering easier</p>
             <button
               onClick={() => {
                 setEditingAddress(null);
@@ -294,7 +294,7 @@ export default function AddressManager() {
               style={{ backgroundColor: '#03BEB0' }}
             >
               <span className="material-symbols-outlined text-[18px]">add</span>
-              Tambah Alamat Pertama
+              Add First Address
             </button>
           </div>
         ) : (
@@ -319,7 +319,7 @@ export default function AddressManager() {
                           className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
                           style={{ backgroundColor: '#E6F7F6', color: '#065D5F' }}
                         >
-                          Utama
+                          Default
                         </span>
                       )}
                     </div>
@@ -335,14 +335,14 @@ export default function AddressManager() {
                         setIsModalOpen(true);
                       }}
                       className="w-9 h-9 rounded-lg hover:bg-teal-50 flex items-center justify-center transition-colors"
-                      title="Edit alamat"
+                      title="Edit address"
                     >
                       <span className="material-symbols-outlined text-[18px]" style={{ color: '#03BEB0' }}>edit</span>
                     </button>
                     <button
                       onClick={() => handleDelete(addr.address_id)}
                       className="w-9 h-9 rounded-lg hover:bg-red-50 flex items-center justify-center transition-colors"
-                      title="Hapus alamat"
+                      title="Delete address"
                     >
                       <span className="material-symbols-outlined text-[18px] text-red-500">delete</span>
                     </button>

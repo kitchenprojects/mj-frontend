@@ -32,28 +32,28 @@ export default function ProfileDetails() {
       setProfile(updatedProfile);
       reset(updatedProfile);
       setIsEditing(false);
-      showSuccess('Profil berhasil diperbarui!');
+      showSuccess('Profile updated successfully!');
     } catch (error) {
       console.error('Failed to update profile:', error);
-      showError('Gagal memperbarui profil.');
+      showError('Failed to update profile.');
     }
   };
 
   const onDeleteAccount = async () => {
     const isConfirmed = await confirmAction(
-      'Hapus Akun?',
-      'Tindakan ini permanen dan tidak dapat dibatalkan. Semua data Anda akan dihapus.',
-      'Ya, Hapus',
-      'Batal'
+      'Delete Account?',
+      'This action is permanent and cannot be undone. All your data will be deleted.',
+      'Yes, Delete',
+      'Cancel'
     );
     if (isConfirmed) {
       try {
         await api.delete('/users/me');
-        showSuccess('Akun berhasil dihapus.');
+        showSuccess('Account deleted successfully.');
         logout();
       } catch (error) {
         console.error('Failed to delete account:', error);
-        showError('Gagal menghapus akun.');
+        showError('Failed to delete account.');
       }
     }
   };
@@ -68,7 +68,7 @@ export default function ProfileDetails() {
   const getMemberSince = () => {
     if (!profile?.created_at) return '-';
     const date = new Date(profile.created_at);
-    return date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   };
 
   return (
@@ -101,7 +101,7 @@ export default function ProfileDetails() {
             </p>
             <p className="text-xs text-white/60 mt-1.5 flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[14px]">calendar_month</span>
-              Member sejak {getMemberSince()}
+              Member since {getMemberSince()}
             </p>
           </div>
         </div>
@@ -114,7 +114,7 @@ export default function ProfileDetails() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[20px]" style={{ color: '#03BEB0' }}>badge</span>
-              <h3 className="font-semibold text-gray-800">Informasi Akun</h3>
+              <h3 className="font-semibold text-gray-800">Account Information</h3>
             </div>
             {!isEditing && (
               <button
@@ -134,14 +134,14 @@ export default function ProfileDetails() {
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[16px] text-gray-400">person</span>
-                Nama Lengkap
+                Full Name
               </label>
               {isEditing ? (
                 <input
                   type="text"
-                  {...register('name', { required: 'Nama wajib diisi' })}
+                  {...register('name', { required: 'Name is required' })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all"
-                  placeholder="Masukkan nama lengkap"
+                  placeholder="Enter full name"
                 />
               ) : (
                 <div className="px-4 py-3 bg-gray-50 rounded-xl text-gray-800 font-medium">
@@ -153,14 +153,14 @@ export default function ProfileDetails() {
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[16px] text-gray-400">phone</span>
-                Nomor Telepon
+                Phone Number
               </label>
               {isEditing ? (
                 <input
                   type="tel"
                   {...register('phone_number')}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all"
-                  placeholder="Contoh: 08123456789"
+                  placeholder="e.g. 08123456789"
                 />
               ) : (
                 <div className="px-4 py-3 bg-gray-50 rounded-xl text-gray-800 font-medium">
@@ -173,7 +173,7 @@ export default function ProfileDetails() {
               <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[16px] text-gray-400">mail</span>
                 Email
-                <span className="ml-1 text-xs text-gray-400 font-normal">(tidak dapat diubah)</span>
+                <span className="ml-1 text-xs text-gray-400 font-normal">(cannot be changed)</span>
               </label>
               <div className="px-4 py-3 bg-gray-100 rounded-xl text-gray-500">
                 {profile?.email || '-'}
@@ -194,7 +194,7 @@ export default function ProfileDetails() {
               className="flex-1 py-3 px-4 border-2 border-gray-200 text-gray-600 font-semibold rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
             >
               <span className="material-symbols-outlined text-[18px]">close</span>
-              Batal
+              Cancel
             </button>
             <button
               type="submit"
@@ -205,12 +205,12 @@ export default function ProfileDetails() {
               {isSubmitting ? (
                 <>
                   <span className="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
-                  Menyimpan...
+                  Saving...
                 </>
               ) : (
                 <>
                   <span className="material-symbols-outlined text-[18px]">save</span>
-                  Simpan
+                  Save Changes
                 </>
               )}
             </button>
@@ -223,7 +223,7 @@ export default function ProfileDetails() {
               className="w-full py-3 px-4 text-gray-600 font-medium rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 border border-gray-200"
             >
               <span className="material-symbols-outlined text-[18px]">logout</span>
-              Keluar dari Akun
+              Sign Out
             </button>
             <button
               type="button"
@@ -231,7 +231,7 @@ export default function ProfileDetails() {
               className="w-full py-3 px-4 text-red-500 font-medium rounded-xl hover:bg-red-50 transition-colors flex items-center justify-center gap-2 border border-red-100"
             >
               <span className="material-symbols-outlined text-[18px]">delete</span>
-              Hapus Akun
+              Delete Account
             </button>
           </div>
         )}

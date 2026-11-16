@@ -42,7 +42,7 @@ const AddAddressModal = ({ onClose, onSave }) => {
                                 </span>
                             </div>
                             <h3 className="text-lg font-bold text-white">
-                                Tambah Alamat Baru
+                                Add New Address
                             </h3>
                         </div>
                         <button
@@ -60,13 +60,13 @@ const AddAddressModal = ({ onClose, onSave }) => {
                         <div>
                             <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                                 <span className="material-symbols-outlined text-[16px] text-gray-400">label</span>
-                                Label Alamat
+                                Address Label
                             </label>
                             <input
                                 type="text"
-                                {...register('label', { required: 'Label wajib diisi' })}
+                                {...register('label', { required: 'Label is required' })}
                                 className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all"
-                                placeholder="Contoh: Rumah, Kantor, dll"
+                                placeholder="e.g. Home, Office, etc."
                             />
                             {errors.label && <p className="mt-1 text-xs text-red-500">{errors.label.message}</p>}
                         </div>
@@ -75,13 +75,13 @@ const AddAddressModal = ({ onClose, onSave }) => {
                         <div>
                             <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                                 <span className="material-symbols-outlined text-[16px] text-gray-400">signpost</span>
-                                Alamat Lengkap
+                                Full Address
                             </label>
                             <input
                                 type="text"
-                                {...register('street', { required: 'Alamat wajib diisi' })}
+                                {...register('street', { required: 'Address is required' })}
                                 className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all"
-                                placeholder="Jalan, No. Rumah, RT/RW, Kelurahan"
+                                placeholder="Street name, Unit No., District"
                             />
                             {errors.street && <p className="mt-1 text-xs text-red-500">{errors.street.message}</p>}
                         </div>
@@ -91,20 +91,20 @@ const AddAddressModal = ({ onClose, onSave }) => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                                     <span className="material-symbols-outlined text-[16px] text-gray-400">location_city</span>
-                                    Kota
+                                    City
                                 </label>
                                 <input
                                     type="text"
-                                    {...register('city', { required: 'Kota wajib diisi' })}
+                                    {...register('city', { required: 'City is required' })}
                                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-all"
-                                    placeholder="Nama Kota"
+                                    placeholder="City Name"
                                 />
                                 {errors.city && <p className="mt-1 text-xs text-red-500">{errors.city.message}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                                     <span className="material-symbols-outlined text-[16px] text-gray-400">markunread_mailbox</span>
-                                    Kode Pos
+                                    Postal Code
                                 </label>
                                 <input
                                     type="text"
@@ -125,7 +125,7 @@ const AddAddressModal = ({ onClose, onSave }) => {
                                 />
                                 <div className="flex items-center gap-2">
                                     <span className="material-symbols-outlined text-[18px] text-gray-400 group-hover:text-teal-500 transition-colors">home</span>
-                                    <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Jadikan alamat utama</span>
+                                    <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Set as default address</span>
                                 </div>
                             </label>
                         </div>
@@ -139,7 +139,7 @@ const AddAddressModal = ({ onClose, onSave }) => {
                             className="flex-1 py-3 px-4 border-2 border-gray-200 text-gray-600 font-semibold rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
                         >
                             <span className="material-symbols-outlined text-[18px]">close</span>
-                            Batal
+                            Cancel
                         </button>
                         <button
                             type="submit"
@@ -150,12 +150,12 @@ const AddAddressModal = ({ onClose, onSave }) => {
                             {isSubmitting ? (
                                 <>
                                     <span className="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
-                                    Menyimpan...
+                                    Saving...
                                 </>
                             ) : (
                                 <>
                                     <span className="material-symbols-outlined text-[18px]">save</span>
-                                    Simpan Alamat
+                                    Save Address
                                 </>
                             )}
                         </button>
@@ -219,13 +219,13 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
 
     const calculateShipping = async () => {
         if (!selectedAddress) {
-            setError('Pilih alamat pengiriman');
+            setError('Please select a delivery address');
             return;
         }
 
         const addressString = getFullAddressString(selectedAddress);
         if (!addressString.trim()) {
-            setError('Alamat tidak lengkap');
+            setError('Address is incomplete');
             return;
         }
 
@@ -250,11 +250,11 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
                 setResult(shippingResult);
                 onShippingCalculated?.(shippingResult);
             } else {
-                setError(data.message || 'Gagal menghitung ongkir');
+                setError(data.message || 'Failed to calculate shipping');
             }
         } catch (err) {
             console.error('Shipping calculation error:', err);
-            setError(err.response?.data?.message || 'Alamat tidak ditemukan. Coba alamat yang lebih lengkap.');
+            setError(err.response?.data?.message || 'Address not found. Please try a more detailed address.');
         } finally {
             setLoading(false);
         }
@@ -268,7 +268,7 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
     const handleAddAddress = async (data) => {
         try {
             const response = await api.post('/users/me/addresses', data);
-            showSuccess('Alamat baru berhasil ditambahkan!');
+            showSuccess('New address added successfully!');
             setShowAddModal(false);
             await loadAddresses();
             // Select the newly added address
@@ -277,7 +277,7 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
             }
         } catch (error) {
             console.error('Failed to save address:', error);
-            showError('Gagal menyimpan alamat.');
+            showError('Failed to save address.');
         }
     };
 
@@ -300,10 +300,10 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
             <div className="bg-white rounded-xl border p-4">
                 <div className="flex items-center gap-2 mb-3">
                     <FiMapPin style={{ color: '#03BEB0' }} size={20} />
-                    <h3 className="font-semibold" style={{ color: '#065D5F' }}>Hitung Ongkir</h3>
+                    <h3 className="font-semibold" style={{ color: '#065D5F' }}>Shipping Calculator</h3>
                 </div>
                 <p className="text-gray-500 text-sm text-center py-4">
-                    Silakan login untuk melihat alamat pengiriman
+                    Please sign in to view delivery addresses
                 </p>
             </div>
         );
@@ -313,7 +313,7 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
         <div className="bg-white rounded-xl border p-4 space-y-4">
             <div className="flex items-center gap-2">
                 <FiMapPin style={{ color: '#03BEB0' }} size={20} />
-                <h3 className="font-semibold" style={{ color: '#065D5F' }}>Hitung Ongkir</h3>
+                <h3 className="font-semibold" style={{ color: '#065D5F' }}>Shipping Calculator</h3>
             </div>
 
             {!result ? (
@@ -322,13 +322,13 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
                     <div className="relative">
                         <label className="block text-sm font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
                             <span className="material-symbols-outlined text-[16px] text-gray-400">location_on</span>
-                            Alamat Pengiriman
+                            Delivery Address
                         </label>
 
                         {addressLoading ? (
                             <div className="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 flex items-center gap-2">
                                 <FiLoader className="animate-spin text-gray-400" size={16} />
-                                <span className="text-gray-400 text-sm">Memuat alamat...</span>
+                                <span className="text-gray-400 text-sm">Loading addresses...</span>
                             </div>
                         ) : addresses.length === 0 ? (
                             <button
@@ -337,7 +337,7 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
                             >
                                 <FiPlus className="text-gray-400 group-hover:text-teal-500 transition-colors" size={20} />
                                 <span className="text-gray-500 group-hover:text-teal-600 font-medium transition-colors">
-                                    Tambah Alamat Pertama
+                                    Add First Address
                                 </span>
                             </button>
                         ) : (
@@ -354,7 +354,7 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
                                                 <span className="font-semibold text-gray-800 text-sm">{selectedAddress.label}</span>
                                                 {selectedAddress.is_default && (
                                                     <span className="text-xs px-1.5 py-0.5 rounded-full bg-teal-100 text-teal-700 font-medium">
-                                                        Utama
+                                                        Default
                                                     </span>
                                                 )}
                                             </div>
@@ -363,7 +363,7 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
                                             </p>
                                         </div>
                                     ) : (
-                                        <span className="text-gray-400">Pilih alamat...</span>
+                                        <span className="text-gray-400">Select address...</span>
                                     )}
                                     <FiChevronDown
                                         className={`text-gray-400 transition-transform flex-shrink-0 ml-2 ${isDropdownOpen ? 'rotate-180' : ''}`}
@@ -392,7 +392,7 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
                                                         <span className="font-semibold text-gray-800 text-sm">{addr.label}</span>
                                                         {addr.is_default && (
                                                             <span className="text-xs px-1.5 py-0.5 rounded-full bg-teal-100 text-teal-700 font-medium">
-                                                                Utama
+                                                                Default
                                                             </span>
                                                         )}
                                                         {selectedAddressId === addr.address_id && (
@@ -413,7 +413,7 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
                                             style={{ color: '#03BEB0' }}
                                         >
                                             <FiPlus size={18} />
-                                            <span className="font-semibold text-sm">Tambah Alamat Baru</span>
+                                            <span className="font-semibold text-sm">Add New Address</span>
                                         </button>
                                     </div>
                                 )}
@@ -438,19 +438,19 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
                         {loading ? (
                             <>
                                 <FiLoader className="animate-spin" size={18} />
-                                Menghitung...
+                                Calculating...
                             </>
                         ) : (
                             <>
                                 <FiTruck size={18} />
-                                Hitung Ongkir
+                                Calculate Shipping
                             </>
                         )}
                     </button>
 
                     {/* Info */}
                     <p className="text-xs text-gray-400 text-center">
-                        Tarif: Rp 3.000/km • Gratis ongkir untuk pesanan di atas Rp 500.000
+                        Rate: Rp 3,000/km • Free shipping for orders above Rp 500,000
                     </p>
                 </>
             ) : (
@@ -470,13 +470,13 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
                     {/* Distance & Duration */}
                     <div className="grid grid-cols-2 gap-3">
                         <div className="bg-gray-50 rounded-lg p-3 text-center">
-                            <p className="text-xs text-gray-500 mb-1">Jarak</p>
+                            <p className="text-xs text-gray-500 mb-1">Distance</p>
                             <p className="text-lg font-bold" style={{ color: '#065D5F' }}>
                                 {result.distance.km} km
                             </p>
                         </div>
                         <div className="bg-gray-50 rounded-lg p-3 text-center">
-                            <p className="text-xs text-gray-500 mb-1">Estimasi</p>
+                            <p className="text-xs text-gray-500 mb-1">Estimated Time</p>
                             <p className="text-lg font-bold" style={{ color: '#065D5F' }}>
                                 {result.duration.text}
                             </p>
@@ -492,20 +492,20 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
                             <>
                                 <p className="text-green-600 font-bold text-xl flex items-center justify-center gap-2">
                                     <FiCheck size={20} />
-                                    GRATIS ONGKIR!
+                                    FREE SHIPPING!
                                 </p>
                                 <p className="text-green-600 text-sm mt-1">
-                                    Pesanan di atas Rp 500.000
+                                    Orders over Rp 500,000
                                 </p>
                             </>
                         ) : (
                             <>
-                                <p className="text-xs text-gray-500 mb-1">Ongkos Kirim</p>
+                                <p className="text-xs text-gray-500 mb-1">Shipping Fee</p>
                                 <p className="text-2xl font-bold" style={{ color: '#03BEB0' }}>
                                     Rp {result.finalCost.toLocaleString()}
                                 </p>
                                 <p className="text-xs text-gray-500 mt-1">
-                                    {result.distance.km} km × Rp 3.000
+                                    {result.distance.km} km × Rp 3,000
                                 </p>
                             </>
                         )}
@@ -517,7 +517,7 @@ export default function ShippingCalculator({ onShippingCalculated, orderTotal = 
                         className="w-full flex items-center justify-center gap-2 py-2 text-gray-600 hover:text-gray-800 text-sm transition-colors"
                     >
                         <FiX size={16} />
-                        Ubah Alamat
+                        Change Address
                     </button>
                 </div>
             )}

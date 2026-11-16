@@ -67,7 +67,7 @@ export default function AddOnModal({ item, onClose, onConfirm }) {
 
                     {/* Quantity */}
                     <div>
-                        <label className="block text-sm font-semibold text-secondary-500 mb-2">Jumlah</label>
+                        <label className="block text-sm font-semibold text-secondary-500 mb-2">Quantity</label>
                         <div className="flex items-center gap-3">
                             <button
                                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -88,7 +88,7 @@ export default function AddOnModal({ item, onClose, onConfirm }) {
                     {/* Add-ons */}
                     <div>
                         <label className="block text-sm font-semibold text-secondary-500 mb-2">
-                            Tambahan (Opsional)
+                            Add-ons (Optional)
                         </label>
                         {loading ? (
                             <p className="text-gray-400 text-sm">Loading...</p>
@@ -120,19 +120,19 @@ export default function AddOnModal({ item, onClose, onConfirm }) {
                                 })}
                             </div>
                         ) : (
-                            <p className="text-gray-400 text-sm">Tidak ada tambahan tersedia</p>
+                            <p className="text-gray-400 text-sm">No add-ons available</p>
                         )}
                     </div>
 
                     {/* Notes */}
                     <div>
                         <label className="block text-sm font-semibold text-secondary-500 mb-2">
-                            Catatan Khusus (Opsional)
+                            Special Instructions (Optional)
                         </label>
                         <textarea
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
-                            placeholder="Contoh: Pedas level 2, tanpa bawang..."
+                            placeholder="e.g. Mild spice, no onions..."
                             className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary-200 focus:border-primary-500 transition-all"
                             rows={3}
                         />
@@ -152,7 +152,7 @@ export default function AddOnModal({ item, onClose, onConfirm }) {
                         className="w-full flex items-center justify-center gap-2 py-3.5 bg-primary-500 text-white font-bold rounded-xl hover:bg-primary-600 transition-colors text-lg"
                     >
                         <FiPlus size={18} />
-                        Tambah ke Keranjang
+                        Add to Cart
                     </button>
                 </div>
             </div>
