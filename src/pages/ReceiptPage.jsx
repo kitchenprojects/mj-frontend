@@ -302,29 +302,3 @@ export default function ReceiptPage() {
         </div>
     );
 }
-                </div>
-            </div>
-
-            {/* Print Styles */}
-            <style>{`
-                @media print {
-                    body * {
-                        visibility: hidden;
-                    }
-                    .print\\:hidden {
-                        display: none !important;
-                    }
-                    #root, #root * {
-                        visibility: visible;
-                    }
-                    #root {
-                        position: absolute;
-                        left: 0;
-                        top: 0;
-                        width: 100%;
-                    }
-                }
-            `}</style>
-        </div>
-    );
-}
